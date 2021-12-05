@@ -34,6 +34,7 @@ document.body.appendChild(renderer.domElement);
 
 camera.position.set(100, 40, 100);
 
+/*
 const geometry = new THREE.TextGeometry( 'Hello three.js!', {
     font: font,
     size: 80,
@@ -44,8 +45,8 @@ const geometry = new THREE.TextGeometry( 'Hello three.js!', {
     bevelSize: 8,
     bevelOffset: 0,
     bevelSegments: 5
-} );
-scene.add(geometry);
+} );*/
+//scene.add(geometry);
 
 // AUDIO
 
