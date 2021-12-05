@@ -6,6 +6,25 @@ import { FBXLoader } from './jsm/loaders/FBXLoader.js';
 
 import { GLTFLoader } from './jsm/loaders/GLTFLoader.js';
 
+//para cargar el modelo
+const loadingBarElement = document.querySelector('.loading-bar');
+const loadingManager=new THREE.LoadingManager(
+    //loader
+    ()=>{
+        gsap.delayedCall(0.5,()=>{
+            gsap.to(overlayMaterial.uniforms.uAlpha,{duration: 3,value:0});
+            loadingBarElement.classList.add('ended')
+            loadingBarElement.style.transform=''
+        })
+
+    },(itemUrl,itemsLoaded,itemsTotal)=>{
+        const progressRatio=itemsLoaded/itemsTotal
+        loadingBarElement.style.trsnsform='scaleX(${progressRatio})'
+    }
+    
+)
+
+
 //boleanos para el uso del teclado
 let moveForward = false;
 let moveBackward = false;
@@ -98,6 +117,9 @@ var personajeEstatico=new THREE.Object3D();
 
 fbx.load('3dmodels/chibi.fbx',function(personaje){
     personaje.position.set(-100,0,-100);
+    personaje.addEventListener( 'click',function(){
+        alert("hola");
+    })
     perso=personaje;
     //grupoPersonaje.add(personaje);
     //sessionStorage.setItem('personaje',personaje);
@@ -164,10 +186,10 @@ const onKeyDown = function (event) {
             //move=isla;
             console.log(perso.position.x);
             perso.position.x += 5;
-            x+=5;
+            //x+=5;
             //y+=5;
             //z+=5;
-            camera.position.x=x;
+            camera.position.x+=5;
             
             break;
 
@@ -180,8 +202,8 @@ const onKeyDown = function (event) {
             //move.position.z -= 5;
             perso.position.z -= 5;
             //x-=5;
-            z-=5;
-            camera.position.z=z;
+            //z-=5;
+            camera.position.z-=5;
             break;
 
         case 'ArrowDown':
@@ -193,7 +215,7 @@ const onKeyDown = function (event) {
             //move.position.x-= 5;
             perso.position.x -= 5;
             x-=5;
-            camera.position.x=x;
+            camera.position.x-=5;
             break;
 
         case 'ArrowRight':
@@ -206,13 +228,17 @@ const onKeyDown = function (event) {
             //perso.clear();
             //perso=perso2;
             perso.position.z += 5;
-            z+=5;
-            camera.position.z=z;
+            //z+=5;
+            camera.position.z+=5;
             break;
 
         case 'Space':
-            if (canJump === true) velocity.y += 350;
-            canJump = false;
+        for(var i=0;i<5;i++){
+            perso.position.y+= 5;
+        }    
+        
+
+            
             /*
             for (var i = 0; i < 20; i++) {
                 house.position.y = i;
