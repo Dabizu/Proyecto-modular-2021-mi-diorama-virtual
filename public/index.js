@@ -3,26 +3,33 @@ import * as THREE from './build/three.module.js';
 import { STLLoader } from './jsm/loaders/STLLoader.js';
 import { OrbitControls } from './jsm/controls/OrbitControls.js';
 import { FBXLoader } from './jsm/loaders/FBXLoader.js';
-
 import { GLTFLoader } from './jsm/loaders/GLTFLoader.js';
 
-//para cargar el modelo
-const loadingBarElement = document.querySelector('.loading-bar');
-const loadingManager=new THREE.LoadingManager(
-    //loader
-    ()=>{
-        gsap.delayedCall(0.5,()=>{
-            gsap.to(overlayMaterial.uniforms.uAlpha,{duration: 3,value:0});
+const loadingBarElement = document.querySelector('.loading-bar')
+const loadingManager = new THREE.LoadingManager(
+    //LOADER
+    ()=>
+    {
+        gsap.delayedCall(0.5, ()=>{
+            gsap.to(overlayMaterial.uniforms.uAlpha, {duration: 3, value: 0})
             loadingBarElement.classList.add('ended')
-            loadingBarElement.style.transform=''
+            loadingBarElement.style.transform = ''
         })
-
-    },(itemUrl,itemsLoaded,itemsTotal)=>{
-        const progressRatio=itemsLoaded/itemsTotal
-        loadingBarElement.style.trsnsform='scaleX(${progressRatio})'
+       // window.setTimeout(()=>{
+            
+       // }, 500)
+        
+    },
+    //PROGRESS
+    (itemUrl, itemsLoaded, itemsTotal)=>{
+        
+        const progressRatio = itemsLoaded / itemsTotal
+        loadingBarElement.style.transform = `scaleX(${progressRatio})`
+        
     }
-    
 )
+const gltfLoader = new GLTFLoader(loadingManager);
+
 
 
 //boleanos para el uso del teclado
@@ -45,13 +52,42 @@ texture.load('atardecer.jpg', function (tex) {
     scene.background = tex;
 });
 */
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
+///DESPUES DE CREAR LA SCENA
+
+const overlayGeometry = new THREE.PlaneGeometry(2, 2, 1, 1)
+const overlayMaterial = new THREE.ShaderMaterial({
+   //wireframe: true,
+   transparent: true,
+   uniforms:
+   {
+       uAlpha:{value: 1  }
+   },
+   vertexShader: `
+       void main(){
+           gl_Position = vec4(position, 1.0);
+
+       }
+   `,
+   fragmentShader:`
+       uniform float uAlpha;
+       void main(){
+           gl_FragColor = vec4(0.0, 0.0, 0.0, uAlpha);
+       }
+   `
+})
+
+const overlay = new THREE.Mesh(overlayGeometry, overlayMaterial)
+scene.add(overlay)
+
 
 const renderer = new THREE.WebGLRenderer();
+const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 10000);
+
+
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
-
-camera.position.set(100, 40, 100);
+camera.position.set(100, 100, 100)
+//camera.position.set(100, 40, 100);
 
 /*
 const geometry = new THREE.TextGeometry( 'Hello three.js!', {
@@ -117,9 +153,6 @@ var personajeEstatico=new THREE.Object3D();
 
 fbx.load('3dmodels/chibi.fbx',function(personaje){
     personaje.position.set(-100,0,-100);
-    personaje.addEventListener( 'click',function(){
-        alert("hola");
-    })
     perso=personaje;
     //grupoPersonaje.add(personaje);
     //sessionStorage.setItem('personaje',personaje);
@@ -127,8 +160,8 @@ fbx.load('3dmodels/chibi.fbx',function(personaje){
 });
 //grupoPersonaje.add(sessionStorage.getItem('personaje'));
 scene.add(perso);
-var loadergltf = new GLTFLoader();
-loadergltf.load("3dmodels/Escenario3.gltf", function (obj) {
+//const gltfLoader = new GLTFLoader();
+gltfLoader.load("3dmodels/Escenario3.gltf", function (obj) {
     obj.scene.scale.set(20,20,20);
     scene.add(obj.scene);
 });
@@ -175,7 +208,7 @@ controls.update();
 
 //añadimos el control del teclado
 const onKeyDown = function (event) {
-    console.log(event.code);
+    //console.log(event.code);
     switch (event.code) {
 
         case 'ArrowUp':
@@ -185,11 +218,11 @@ const onKeyDown = function (event) {
             //house.position.x += 3;
             //move=isla;
             console.log(perso.position.x);
-            perso.position.x += 5;
-            //x+=5;
+            perso.position.x -= 5;
+            x-=5;
             //y+=5;
             //z+=5;
-            camera.position.x+=5;
+            camera.position.x=x;
             
             break;
 
@@ -200,10 +233,10 @@ const onKeyDown = function (event) {
             //house.position.z -= 3;
             //move=house;
             //move.position.z -= 5;
-            perso.position.z -= 5;
+            perso.position.z += 5;
             //x-=5;
-            //z-=5;
-            camera.position.z-=5;
+            z+=5;
+            camera.position.z=z;
             break;
 
         case 'ArrowDown':
@@ -213,9 +246,9 @@ const onKeyDown = function (event) {
             //house.position.x -= 3;
             //move=isla;
             //move.position.x-= 5;
-            perso.position.x -= 5;
-            x-=5;
-            camera.position.x-=5;
+            perso.position.x += 5;
+            x+=5;
+            camera.position.x=x;
             break;
 
         case 'ArrowRight':
@@ -227,18 +260,14 @@ const onKeyDown = function (event) {
             //move.position.z += 5;
             //perso.clear();
             //perso=perso2;
-            perso.position.z += 5;
-            //z+=5;
-            camera.position.z+=5;
+            perso.position.z -= 5;
+            z-=5;
+            camera.position.z=z;
             break;
 
         case 'Space':
-        for(var i=0;i<5;i++){
-            perso.position.y+= 5;
-        }    
-        
-
-            
+            if (canJump === true) velocity.y += 350;
+            canJump = false;
             /*
             for (var i = 0; i < 20; i++) {
                 house.position.y = i;
@@ -308,6 +337,10 @@ animate();
 
 
 
+
+
+
+//_________________________________________________________________________________________________///
 
 /*
 var audioLoader = new THREE.AudioLoader();
