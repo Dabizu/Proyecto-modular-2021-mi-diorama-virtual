@@ -245,7 +245,7 @@ app.post("/detalle_nivel",(req,res)=>{
   });
 });
 
-/*
+/*en esta tengo dudas sera necsario anexar la ubicacion
 tabla: imagen 
 id
 nombre
@@ -283,6 +283,60 @@ fecha_actualizado
 fecha_eliminado
 */
 app.post("/recomendacion",(req,res)=>{
+  var id=req.param('id');
+  var id_alumno=param('id_alumno');
+  var titulo= param('titulo');
+  var tipo= param('tipo');
+  var asunto= param('asunto');
+  var url= param('url');
+  var compatibilidad=param('compatibilidad');
+  var fecha_creado=req.param('fecha_creado');
+  var fecha_actualizado=req.param('fecha_actualizado');
+  var fecha_eliminado=req.param('fecha_eliminado');
+  MongoClient.connect(url, function(err, db) {
+    if (err) throw err;
+    var dbo = db.db(base);
+    var myobj = { id: id, id_alumno: id_alumno, titulo: titulo, tipo: tipo, asunto: asunto, url: url,
+    compatibilidad: compatibilidad, fecha_creado:fecha_creado,fecha_actualizado:fecha_actualizado,
+    fecha_eliminado:fecha_eliminado };
+    dbo.collection("customers").insertOne(myobj, function(err, res) {
+      if (err) throw err;
+      console.log("1 document inserted");
+      db.close();
+    });
+  });
+});
+/*
+tabla: publicacion
+id
+titulo
+contenido
+imagen
+fecha
+likes
+categoria
+descripcion
+comentarios
+*/
+app.post("/recomendacion",(req,res)=>{
+  MongoClient.connect(url, function(err, db) {
+    if (err) throw err;
+    var dbo = db.db(base);
+    var myobj = { name: "Company Inc", address: "Highway 37" };
+    dbo.collection("customers").insertOne(myobj, function(err, res) {
+      if (err) throw err;
+      console.log("1 document inserted");
+      db.close();
+    });
+  });
+});
+/*
+tabla: post_evento
+mensaje
+id_educador
+cupo
+*/
+app.post("/recomendacion",(req,res)=>{
   MongoClient.connect(url, function(err, db) {
     if (err) throw err;
     var dbo = db.db(base);
@@ -295,25 +349,5 @@ app.post("/recomendacion",(req,res)=>{
   });
 });
 
-/*
-const Say = require('say').Say;
-const say=new Say('win32');
-//say.speak('hola');
-say.speak("que tal?",null, 1.0, (err) => {
-  if (err) {
-    return console.error(err)
-  }
- 
-  console.log('se reprodujo el texto.')
-});*/
-//say.stop();
-/*
-say.speak('Hello, how are you today?', (err) => {
-    if (err) {
-        return console.error(err);
-    }
-
-    console.log('Text has been spoken.');
-});*/
 
 app.listen(port, () => { console.log("se inicio el servidor"); });

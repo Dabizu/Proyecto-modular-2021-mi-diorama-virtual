@@ -57,7 +57,8 @@ texture.load('atardecer.jpg', function (tex) {
 const overlayGeometry = new THREE.PlaneGeometry(2, 2, 1, 1)
 const overlayMaterial = new THREE.ShaderMaterial({
    //wireframe: true,
-   transparent: true,
+   //transparent: true,
+   transparent: false,
    uniforms:
    {
        uAlpha:{value: 1  }
@@ -146,6 +147,7 @@ fbx.load('3dmodels/terreno.fbx', function (tierra) {
     scene.add(tierra);
 });*/
 //var grupoPersonaje=new THREE.Group();
+var objetos=new THREE.Group();
 var personew=new THREE.Group();
 var perso=new THREE.Object3D();
 var personajeCaminando=new THREE.Object3D();
@@ -164,7 +166,9 @@ scene.add(perso);
 gltfLoader.load("3dmodels/Escenario3.gltf", function (obj) {
     obj.scene.scale.set(20,20,20);
     scene.add(obj.scene);
+    //objetos.add(obj);
 });
+scene.add(objetos);
 //agregamos luz
 /*
 const light = new THREE.AmbientLight(0x404040); // soft white light
@@ -215,13 +219,9 @@ const onKeyDown = function (event) {
         case 'KeyW':
             moveForward = true;
             console.log("adelante");
-            //house.position.x += 3;
-            //move=isla;
             console.log(perso.position.x);
             perso.position.x -= 5;
             x-=5;
-            //y+=5;
-            //z+=5;
             camera.position.x=x;
             
             break;
@@ -230,11 +230,7 @@ const onKeyDown = function (event) {
         case 'KeyA':
             moveLeft = true;
             console.log("izquierda");
-            //house.position.z -= 3;
-            //move=house;
-            //move.position.z -= 5;
             perso.position.z += 5;
-            //x-=5;
             z+=5;
             camera.position.z=z;
             break;
@@ -243,9 +239,6 @@ const onKeyDown = function (event) {
         case 'KeyS':
             moveBackward = true;
             console.log("atras");
-            //house.position.x -= 3;
-            //move=isla;
-            //move.position.x-= 5;
             perso.position.x += 5;
             x+=5;
             camera.position.x=x;
@@ -255,11 +248,6 @@ const onKeyDown = function (event) {
         case 'KeyD':
             moveRight = true;
             console.log("derecha");
-            //house.position.z += 3;
-            //move=house;
-            //move.position.z += 5;
-            //perso.clear();
-            //perso=perso2;
             perso.position.z -= 5;
             z-=5;
             camera.position.z=z;
@@ -268,14 +256,6 @@ const onKeyDown = function (event) {
         case 'Space':
             if (canJump === true) velocity.y += 350;
             canJump = false;
-            /*
-            for (var i = 0; i < 20; i++) {
-                house.position.y = i;
-            }
-            for (var i = 20; i > 0; i--) {
-                house.position.y = i;
-            }*/
-
             break;
 
     }
@@ -312,122 +292,20 @@ const onKeyUp = function (event) {
 
 document.addEventListener('keydown', onKeyDown);
 document.addEventListener('keyup', onKeyUp);
-/*
+
 function colisionBloques(){
 	for (var i = 0; i < numeroCosas; i++) {
 		if(Math.sqrt(Math.pow((posx - cubos[i].position.x), 2) + Math.pow((posz - cubos[i].position.z), 2)) < 100){
 			 cubos[i].material.color.set( 0xff00ff );
 		}
 	}
-}*/
+}
+
 
 const animate = function () {
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
+    colisionBloques();
 };
 
 animate();
-
-
-
-
-
-
-
-
-
-
-
-
-
-//_________________________________________________________________________________________________///
-
-/*
-var audioLoader = new THREE.AudioLoader();
-var listener = new THREE.AudioListener();
-var audio = new THREE.Audio(listener);
-audioLoader.load('audio/adventures-in-adventureland-by-kevin-macleod-from-filmmusic-io.mp3', function (buffer) {
-    audio.setBuffer(buffer);
-    audio.setLoop(true);
-    audio.play();
-});*/
-/*
-let loader = new STLLoader();
-loader.load('/3dmodels/mono.stl', (model)=>{
-    object = new THREE.Mesh(
-        model,
-        new THREE.MeshLambertMaterial({color: 0x00ff00})
-    );
-    object.scale.set(0.1, 0.1, 0.1);
-    object.position.set(0,-5,0);
-    object.rotation.x = -Math.PI/2;
-    init();
-});
-
-import {GLTFLoader} from './threejs/GLTFLoader.js';
-const loader2 = new GLTFLoader();
-
-loader2.load( './3dmodels/girl.glb', function ( gltf ) {
-
-    scene.add( gltf.scene );
-
-}, undefined, function ( error ) {
-
-    console.error( error );
-
-} );
-
-let loader3 = new GLTFLoader();
-
-loader3.load( './3dmodels/girl2.glb', function ( g ) {
-
-    scene.add( g.scene );
-
-}, undefined, function ( error ) {
-
-    console.error( error );
-
-} );
-*/
-//var loader = new THREE.FBXLoader();
-/*
-loader.load('.FBX', function (object) {
-
-
-    object.traverse(function (child) {
-        if (child.isMesh) {
-            child.castShadow = true;
-            child.receiveShadow = false;
-            child.flatshading = true;
-        }
-    });
-
-    scene.add(object);
-});
-*/
-//cargando escenario
-//const material = new THREE.MeshNormalMaterial()
-/*
-import {FBXLoader} from './threejs/FBXLoader.js';
-const fbxLoader = new FBXLoader()
-fbxLoader.load('./3dmodels/update/FBX/aloe.FBX',
-    function(object){
-        // object.traverse(function (child) {
-        //     if ((child as THREE.Mesh).isMesh) {
-        //         // (child as THREE.Mesh).material = material
-        //         if ((child as THREE.Mesh).material) {
-        //             ((child as THREE.Mesh).material as THREE.MeshBasicMaterial).transparent = false
-        //         }
-        //     }
-        // })
-        // object.scale.set(.01, .01, .01)
-        scene.add(object)
-    },
-    (xhr) => {
-        console.log((xhr.loaded / xhr.total) * 100 + '% loaded')
-    },
-    (error) => {
-        console.log(error)
-    }
-)*/
-
