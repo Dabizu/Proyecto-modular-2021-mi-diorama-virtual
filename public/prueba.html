@@ -1,5 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link type="text/css" rel="stylesheet" href="css/main.css">
+    <title>juego de aves</title>
+</head>
+<body>
+	<div id="selection">
+		
+	</div>
+
+	<div id="d1"></div>
+	<div id="d2"></div>
+	<div id="d3"></div>
+	<div id="d4"></div>
+	<div id="d5"></div>
+	<div id="d6"></div>
+	<div id="d7"></div>
+	<div id="d8"></div>
+
+	<div id="contenedorObjetos"></div>
+    <script type="module" src="./scenaparque.js"></script>
+</body>
+</html>
+
+
+
+<!--
+<!DOCTYPE html>
+<html lang="en">
 	<head>
 		<title>three.js webgl - interactive cubes</title>
 		<meta charset="utf-8">
@@ -135,22 +166,7 @@
 					scene.add( object );
 
 				}
-				const fbx = new FBXLoader();
-				fbx.load('3dmodels/aguila-real.fbx',function(personaje){
-					personaje.position.set(2,2,2);
-					
-					//grupoPersonaje.add(personaje);
-					//sessionStorage.setItem('personaje',personaje);
-					console.log("dame su nombre");
-					//le damos un nobre al personaje
-					personaje.name="personaje1";
-					//acedemos a su nombre
-					console.log(personaje.name);
-					//mostramos el id de personaje
-					console.log(personaje.id);
-					// loa añadimos a la escena
-					scene.add(personaje);
-				});
+				
 
 				raycaster = new THREE.Raycaster();
 				raycaster2 = new THREE.Raycaster();
@@ -253,6 +269,23 @@
 
 
 			}
+
+			const fbx = new FBXLoader();
+			fbx.load('3dmodels/aguila-real.fbx',function(personaje){
+				personaje.position.set(2,2,2);
+				
+				//grupoPersonaje.add(personaje);
+				//sessionStorage.setItem('personaje',personaje);
+				console.log("dame su nombre");
+				//le damos un nobre al personaje
+				personaje.name="personaje1";
+				//acedemos a su nombre
+				console.log(personaje.name);
+				//mostramos el id de personaje
+				console.log(personaje.id);
+				// loa añadimos a la escena
+				scene.add(personaje);
+			});
 
 			function onWindowResize() {
 
@@ -528,6 +561,24 @@
 
 	</body>
 </html>
+-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--creo que ya esto no-->
 <!--
 <!DOCTYPE html>
 <html lang="en">
@@ -848,27 +899,3 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 	</body>
 </html>
 -->
-
-
-
-
-
-
-
-
-
-<!--<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
-        body{margin:0;}
-    </style>
-</head>
-<body>
-    <script type="module" src="./scenaparque.js"></script>
-</body>
-</html>-->

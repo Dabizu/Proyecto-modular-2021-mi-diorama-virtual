@@ -1,5 +1,5 @@
 body{margin:0;}
-#selection {
+/*#selection {
     position: fixed;
     display: flex;
     flex-direction: column;
@@ -10,9 +10,42 @@ body{margin:0;}
     top: 0;
     z-index: 999;
 }
-
-#selection > div {
-    height: 128px;
-    width: 128px;
+*/
+#selection{
+    position: absolute;
     border: 1px solid white;
+}
+#d1,#d2,#d3,#d4{
+    position: absolute;
+    background-color: cyan;
+    width: 60px;
+    height: 60px;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+    
+}
+#d5,#d6,#d7,#d8{
+    position: absolute;
+    background-color: cyan;
+    width: 60px;
+    height: 60px;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+}
+#contenedorObjetos{
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    background-color: dodgerblue;
+}
+#dato{
+    width: 80px;
+    height: 40px;
+    background-color:azure;
+    margin: 3px;
+}
+#contenedorObjetos{
+    overflow-y: scroll;
 }
