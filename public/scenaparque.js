@@ -3,23 +3,48 @@ import { OrbitControls } from './jsm/controls/OrbitControls.js';
 import { FBXLoader } from './jsm/loaders/FBXLoader.js';
 //const scene = new THREE.Scene();
 scene.background=new THREE.Color(0x591405);
-const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 10000 );
 //declaranbdo renderer
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize( window.innerWidth, window.innerHeight );
 document.body.appendChild( renderer.domElement );
 const fbx = new FBXLoader();
 //const grupo1=new THREE.Group();
-fbx.load('3dmodels/chibi.fbx',function(personaje){
+fbx.load('3dmodels/aloe.fbx',function(personaje){
     //personaje.position.set(-100,0,-100);
-    personaje.name="personaje122312";
+    personaje.scale.set(100, 100, 100)
+    personaje.position.set(0,0,0);
+    personaje.name="p";
     scene.add(personaje);
-    
-    //grupo1.add(personaje);
-    
+    console.log("este es el objeto scene:");
+    console.log(scene.children);
+    var objetos3d=scene.children;
+    console.log(objetos3d[0])
+    var objetoAnimal=objetos3d[0];
+    console.log("este es eo objeto definiti")
+    console.log(objetoAnimal.name);
+    //console.log(scene);
 });
+fbx.load('3dmodels/aloe.fbx',function(personaje){
+    //personaje.position.set(-100,0,-100);
+    personaje.scale.set(100, 100, 100)
+    personaje.position.set(50,0,50);
+    personaje.name="p2";
+    scene.add(personaje);
+    console.log("este es el objeto scene:");
+    console.log(scene.children);
+    var objetos3d=scene.children;
+    console.log(objetos3d[0])
+    var objetoAnimal=objetos3d[0];
+    console.log("este es eo objeto definiti")
+    console.log(objetoAnimal.name);
+    //console.log(scene);
+});
+var posx=0, posy=0, posz=0;
 
-for ( let i = 0; i < 30; i ++ ) {
+/*
+const geometry = new THREE.BoxGeometry( 20, 20, 20 );
+for ( let i = 0; i < 3; i ++ ) {
 
     const object = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { color: Math.random() * 0xffffff } ) );
 
@@ -41,6 +66,7 @@ for ( let i = 0; i < 30; i ++ ) {
     scene.add( object );
 
 }
+*/
 /*
 const geometry = new THREE.BoxGeometry();
 const material = new THREE.MeshBasicMaterial( { color: 0x0AE1C7  } );
@@ -53,6 +79,8 @@ scene.add(cube);*/
 //variables de raycaster
 let raycaster, raycaster2, raycaster3, raycaster4;
 let raycaster5, raycaster6, raycaster7, raycaster8;
+let raycaster9, raycaster10, raycaster11, raycaster12;
+let raycaster13, raycaster14, raycaster15, raycaster16;
 //creamos la instancian de raycaster
 raycaster = new THREE.Raycaster();
 raycaster2 = new THREE.Raycaster();
@@ -64,9 +92,21 @@ raycaster6 = new THREE.Raycaster();
 raycaster7 = new THREE.Raycaster();
 raycaster8 = new THREE.Raycaster();
 
+raycaster9 = new THREE.Raycaster();
+raycaster10 = new THREE.Raycaster();
+raycaster11 = new THREE.Raycaster();
+raycaster12 = new THREE.Raycaster();
+
+raycaster13 = new THREE.Raycaster();
+raycaster14 = new THREE.Raycaster();
+raycaster15 = new THREE.Raycaster();
+raycaster16 = new THREE.Raycaster();
+
 //variables de interseccion
 var INTERSECTED, INTERSECTED2, INTERSECTED3, INTERSECTED4;
 var INTERSECTED5, INTERSECTED6, INTERSECTED7, INTERSECTED8;
+var INTERSECTED9, INTERSECTED10, INTERSECTED11, INTERSECTED12;
+var INTERSECTED13, INTERSECTED14, INTERSECTED15, INTERSECTED16;
 let theta = 0;
 //declarando el array contenedor de nombres de objetos
 var arreglo=new Array();
@@ -80,6 +120,17 @@ const pointer5 = new THREE.Vector2();
 const pointer6 = new THREE.Vector2();
 const pointer7 = new THREE.Vector2();
 const pointer8 = new THREE.Vector2();
+
+const pointer9 = new THREE.Vector2();
+const pointer10 = new THREE.Vector2();
+const pointer11 = new THREE.Vector2();
+const pointer12 = new THREE.Vector2();
+
+const pointer13 = new THREE.Vector2();
+const pointer14 = new THREE.Vector2();
+const pointer15 = new THREE.Vector2();
+const pointer16 = new THREE.Vector2();
+
 //calculos de las posiciones de los puntos 
 var base = window.innerWidth;
 var altura = window.innerHeight;
@@ -106,6 +157,16 @@ var d5=document.getElementById("d5");
 var d6=document.getElementById("d6");
 var d7=document.getElementById("d7");
 var d8=document.getElementById("d8");
+
+var d9=document.getElementById("d9");
+var d10=document.getElementById("d10");
+var d11=document.getElementById("d11");
+var d12=document.getElementById("d12");
+
+var d13=document.getElementById("d13");
+var d14=document.getElementById("d14");
+var d15=document.getElementById("d15");
+var d16=document.getElementById("d16");
 //dar posiciones a nuestros puntos de referencia
 /*
 d1.style.width=60+'px';
@@ -230,35 +291,68 @@ function render() {
     raycaster7.setFromCamera( pointer7, camera );
     raycaster8.setFromCamera( pointer8, camera );
 
-    const intersects = raycaster.intersectObjects( scene.children, false );
-    const intersects2 = raycaster2.intersectObjects( scene.children, false );
-    const intersects3 = raycaster3.intersectObjects( scene.children, false );
-    const intersects4 = raycaster4.intersectObjects( scene.children, false );
+    raycaster9.setFromCamera( pointer9, camera );
+    raycaster10.setFromCamera( pointer10, camera );
+    raycaster11.setFromCamera( pointer11, camera );
+    raycaster12.setFromCamera( pointer12, camera );
 
-    const intersects5 = raycaster5.intersectObjects( scene.children, false );
-    const intersects6 = raycaster6.intersectObjects( scene.children, false );
-    const intersects7 = raycaster7.intersectObjects( scene.children, false );
-    const intersects8 = raycaster8.intersectObjects( scene.children, false );
+    raycaster13.setFromCamera( pointer13, camera );
+    raycaster14.setFromCamera( pointer14, camera );
+    raycaster15.setFromCamera( pointer15, camera );
+    raycaster16.setFromCamera( pointer16, camera );
 
-    if ( intersects.length > 0 ) {
-        if ( INTERSECTED != intersects[ 0 ].object ) {
-            const found = arreglo.find(element => element === intersects[ 0 ].object.name);
+    const intersects = raycaster.intersectObjects( scene.children, true);
+    const intersects2 = raycaster2.intersectObjects( scene.children, true);
+    const intersects3 = raycaster3.intersectObjects( scene.children, true);
+    const intersects4 = raycaster4.intersectObjects( scene.children, true);
 
+    const intersects5 = raycaster5.intersectObjects( scene.children, true);
+    const intersects6 = raycaster6.intersectObjects( scene.children, true);
+    const intersects7 = raycaster7.intersectObjects( scene.children, true);
+    const intersects8 = raycaster8.intersectObjects( scene.children, true);
+
+    const intersects9 = raycaster9.intersectObjects( scene.children, true);
+    const intersects10 = raycaster10.intersectObjects( scene.children, true);
+    const intersects11 = raycaster11.intersectObjects( scene.children, true);
+    const intersects12 = raycaster12.intersectObjects( scene.children, true);
+
+    const intersects13 = raycaster13.intersectObjects( scene.children, true);
+    const intersects14 = raycaster14.intersectObjects( scene.children, true);
+    const intersects15 = raycaster15.intersectObjects( scene.children, true);
+    const intersects16 = raycaster16.intersectObjects( scene.children, true);
+
+    
+    if(intersects.length > 0){
+        if(INTERSECTED != intersects[ 0 ].object){
+            console.log("este es el objeto scene:");
+            console.log(scene.children);
+            var objetos3d=scene.children;
+            //console.log(objetos3d)
+            for(var i=0;i<objeto3d.length;i++){
+                if(objeto3d[i]==intersects2[ 0 ].object){
+                    console.log("esta es igual"+objeto3d[i])
+                }
+            }
+            var objetoAnimal=objetos3d;
+            console.log("este es eo objeto definiti")
+            console.log(objetoAnimal.name);
+            const found = arreglo.find(element => element === objetoAnimal.name);
             if(found===undefined){
                 var contenedor=document.getElementById('contenedorObjetos');
                 var div=document.createElement('div');
                 div.setAttribute("id","dato");
-                div.innerText=intersects[ 0 ].object.name;
+                div.innerText=objetoAnimal.name;
                 contenedor.append(div);
-                arreglo.push(intersects[ 0 ].object.name);
+                arreglo.push(objetoAnimal.name);
                 if(arreglo.length===5){
                     alert("haz encontrado todos los objetos");
                 }
             }
             
-            console.log("cambio de color 1");
+            console.log("cambio de color 2");
         }
     }
+
     if(intersects2.length > 0){
         if(INTERSECTED2 != intersects2[ 0 ].object){
             const found = arreglo.find(element => element === intersects2[ 0 ].object.name);
@@ -391,11 +485,194 @@ function render() {
             console.log("cambio de color 8");
         }
     }
+    if ( intersects9.length > 0 ) {
+        if ( INTERSECTED9 != intersects9[ 0 ].object ) {
+            const found = arreglo.find(element => element === intersects9[ 0 ].object.name);
+
+            if(found===undefined){
+                var contenedor=document.getElementById('contenedorObjetos');
+                var div=document.createElement('div');
+                div.setAttribute("id","dato");
+                div.innerText=intersects9[ 0 ].object.name;
+                contenedor.append(div);
+                arreglo.push(intersects9[ 0 ].object.name);
+                if(arreglo.length===5){
+                    alert("haz encontrado todos los objetos");
+                }
+            }
+            
+            console.log("cambio de color 1");
+        }
+    }
+    if ( intersects10.length > 0 ) {
+        if ( INTERSECTED10 != intersects10[ 0 ].object ) {
+            const found = arreglo.find(element => element === intersects10[ 0 ].object.name);
+
+            if(found===undefined){
+                var contenedor=document.getElementById('contenedorObjetos');
+                var div=document.createElement('div');
+                div.setAttribute("id","dato");
+                div.innerText=intersects10[ 0 ].object.name;
+                contenedor.append(div);
+                arreglo.push(intersects10[ 0 ].object.name);
+                if(arreglo.length===5){
+                    alert("haz encontrado todos los objetos");
+                }
+            }
+            
+            console.log("cambio de color 1");
+        }
+    }
+    if ( intersects11.length > 0 ) {
+        if ( INTERSECTED11 != intersects11[ 0 ].object ) {
+            const found = arreglo.find(element => element === intersects11[ 0 ].object.name);
+
+            if(found===undefined){
+                var contenedor=document.getElementById('contenedorObjetos');
+                var div=document.createElement('div');
+                div.setAttribute("id","dato");
+                div.innerText=intersects11[ 0 ].object.name;
+                contenedor.append(div);
+                arreglo.push(intersects11[ 0 ].object.name);
+                if(arreglo.length===5){
+                    alert("haz encontrado todos los objetos");
+                }
+            }
+            
+            console.log("cambio de color 1");
+        }
+    }
+    if ( intersects.length > 0 ) {
+        if ( INTERSECTED12 != intersects12[ 0 ].object ) {
+            const found = arreglo.find(element => element === intersects12[ 0 ].object.name);
+
+            if(found===undefined){
+                var contenedor=document.getElementById('contenedorObjetos');
+                var div=document.createElement('div');
+                div.setAttribute("id","dato");
+                div.innerText=intersects12[ 0 ].object.name;
+                contenedor.append(div);
+                arreglo.push(intersects12[ 0 ].object.name);
+                if(arreglo.length===5){
+                    alert("haz encontrado todos los objetos");
+                }
+            }
+            
+            console.log("cambio de color 1");
+        }
+    }
+    if ( intersects13.length > 0 ) {
+        if ( INTERSECTED13 != intersects13[ 0 ].object ) {
+            const found = arreglo.find(element => element === intersects13[ 0 ].object.name);
+
+            if(found===undefined){
+                var contenedor=document.getElementById('contenedorObjetos');
+                var div=document.createElement('div');
+                div.setAttribute("id","dato");
+                div.innerText=intersects13[ 0 ].object.name;
+                contenedor.append(div);
+                arreglo.push(intersects13[ 0 ].object.name);
+                if(arreglo.length===5){
+                    alert("haz encontrado todos los objetos");
+                }
+            }
+            
+            console.log("cambio de color 1");
+        }
+    }
+    if ( intersects14.length > 0 ) {
+        if ( INTERSECTED14 != intersects14[ 0 ].object ) {
+
+            const found = arreglo.find(element => element === intersects14[ 0 ].object.name);
+
+            if(found===undefined){
+                var contenedor=document.getElementById('contenedorObjetos');
+                var div=document.createElement('div');
+                div.setAttribute("id","dato");
+                div.innerText=intersects14[ 0 ].object.name;
+                contenedor.append(div);
+                arreglo.push(intersects14[ 0 ].object.name);
+                if(arreglo.length===5){
+                    alert("haz encontrado todos los objetos");
+                }
+            }
+            
+            console.log("cambio de color 1");
+        }
+    }
+    if ( intersects15.length > 0 ) {
+        if ( INTERSECTED15 != intersects15[ 0 ].object ) {
+            const found = arreglo.find(element => element === intersects15[ 0 ].object.name);
+
+            if(found===undefined){
+                var contenedor=document.getElementById('contenedorObjetos');
+                var div=document.createElement('div');
+                div.setAttribute("id","dato");
+                div.innerText=intersects15[ 0 ].object.name;
+                contenedor.append(div);
+                arreglo.push(intersects15[ 0 ].object.name);
+                if(arreglo.length===5){
+                    alert("haz encontrado todos los objetos");
+                }
+            }
+            
+            console.log("cambio de color 1");
+        }
+    }
+    if ( intersects16.length > 0 ) {
+        if ( INTERSECTED16 != intersects16[ 0 ].object ) {
+            const found = arreglo.find(element => element === intersects16[ 0 ].object.name);
+
+            if(found===undefined){
+                var contenedor=document.getElementById('contenedorObjetos');
+                var div=document.createElement('div');
+                div.setAttribute("id","dato");
+                div.innerText=intersects16[ 0 ].object.name;
+                contenedor.append(div);
+                arreglo.push(intersects16[ 0 ].object.name);
+                if(arreglo.length===5){
+                    alert("haz encontrado todos los objetos");
+                }
+            }
+            
+            console.log("cambio de color 1");
+        }
+    }
     else {
 
         if ( INTERSECTED ) INTERSECTED.material.emissive.setHex( INTERSECTED.currentHex );
+        if ( INTERSECTED2 ) INTERSECTED2.material.emissive.setHex( INTERSECTED2.currentHex);
+        if ( INTERSECTED3 ) INTERSECTED3.material.emissive.setHex( INTERSECTED3.currentHex );
+        if ( INTERSECTED4 ) INTERSECTED4.material.emissive.setHex( INTERSECTED4.currentHex );
+        if ( INTERSECTED5 ) INTERSECTED5.material.emissive.setHex( INTERSECTED5.currentHex );
+        if ( INTERSECTED6 ) INTERSECTED6.material.emissive.setHex( INTERSECTED6.currentHex );
+        if ( INTERSECTED7 ) INTERSECTED7.material.emissive.setHex( INTERSECTED7.currentHex );
+        if ( INTERSECTED8 ) INTERSECTED8.material.emissive.setHex( INTERSECTED8.currentHex );
+        if ( INTERSECTED9 ) INTERSECTED9.material.emissive.setHex( INTERSECTED9.currentHex );
+        if ( INTERSECTED10 ) INTERSECTED10.material.emissive.setHex( INTERSECTED10.currentHex );
+        if ( INTERSECTED11 ) INTERSECTED11.material.emissive.setHex( INTERSECTED11.currentHex );
+        if ( INTERSECTED12 ) INTERSECTED12.material.emissive.setHex( INTERSECTED12.currentHex );
+        if ( INTERSECTED13 ) INTERSECTED13.material.emissive.setHex( INTERSECTED13.currentHex );
+        if ( INTERSECTED14 ) INTERSECTED14.material.emissive.setHex( INTERSECTED14.currentHex );
+        if ( INTERSECTED15 ) INTERSECTED15.material.emissive.setHex( INTERSECTED15.currentHex );
+        if ( INTERSECTED16 ) INTERSECTED16.material.emissive.setHex( INTERSECTED16.currentHex );
 
         INTERSECTED = null;
+        INTERSECTED2 = null;
+        INTERSECTED3 = null;
+        INTERSECTED4 = null;
+        INTERSECTED5 = null;
+        INTERSECTED6 = null;
+        INTERSECTED7 = null;
+        INTERSECTED8 = null;
+        INTERSECTED9 = null;
+        INTERSECTED10 = null;
+        INTERSECTED11 = null;
+        INTERSECTED12 = null;
+        INTERSECTED13 = null;
+        INTERSECTED14 = null;
+        INTERSECTED15 = null;
+        INTERSECTED16 = null;
 
     }
 
@@ -411,7 +688,18 @@ function animate() {
     requestAnimationFrame( animate );
     
     render();
-    onPointerMove()
+    onPointerMove();
+    /*
+    var object = scene.getObjectByName("p");
+    console.log("estos son lso objetos")
+    console.log(object)*/
 };
 animate();
 console.log(scene.children);
+var objetos3d=scene.children;
+console.log(objetos3d)
+
+/*
+var object = scene.getObject();
+console.log("estos son lso objetos")
+console.log(object)*/
