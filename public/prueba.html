@@ -5,12 +5,17 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link type="text/css" rel="stylesheet" href="css/main.css">
+	<link type="text/css" rel="stylesheet" href="css/emergente.css">
+	<link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,600|Open+Sans" rel="stylesheet"> 
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css">
+
+	<link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400&amp;display=swap'>
+	<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css'>
+	<script src="https://unpkg.com/vue@2/dist/vue.js"></script>
     <title>juego de aves</title>
 </head>
 <body>
-	<div id="selection">
-		
-	</div>
+	<div id="selection"></div>
 
 	<div id="d1"></div>
 	<div id="d2"></div>
@@ -21,8 +26,67 @@
 	<div id="d7"></div>
 	<div id="d8"></div>
 
+	<div id="d9"></div>
+	<div id="d10"></div>
+	<div id="d11"></div>
+	<div id="d12"></div>
+	<div id="d13"></div>
+	<div id="d14"></div>
+	<div id="d15"></div>
+	<div id="d16"></div>
+
+	<div id="d17"></div>
+	<div id="d18"></div>
+	<div id="d19"></div>
+	<div id="d20"></div>
+	<div id="d21"></div>
+	<div id="d22"></div>
+	<div id="d23"></div>
+	<div id="d24"></div>
+
+	<div id="d25"></div>
+	<div id="d26"></div>
+	<div id="d27"></div>
+	<div id="d28"></div>
+	<div id="d29"></div>
+	<div id="d30"></div>
+	<div id="d31"></div>
+	<div id="d32"></div>
+
 	<div id="contenedorObjetos"></div>
     <script type="module" src="./scenaparque.js"></script>
+	<script>
+		function animalCapturado(){
+			var divoverlay= document.createElement('div');
+			divoverlay.setAttribute("id","overlay");
+			divoverlay.setAttribute("class","overlay");
+			var divpopup= document.createElement('div');
+			divpopup.setAttribute("id","popup");
+			divpopup.setAttribute("style","background-color: rgba(187, 179, 179, 0.5)");
+			var a=document.createElement('a');
+			a.setAttribute("href","#");
+			a.setAttribute("onclick","cerrar()");
+			a.setAttribute("class","btn-cerrar-popup");
+			var i=document.createElement("i");
+			i.setAttribute("class","fas fa-times");
+			a.append(i);
+			divpopup.append(a);
+			divoverlay.append(divpopup);
+			document.body.append(divoverlay);
+			var overlay = document.getElementById('overlay');
+			var popup = document.getElementById('popup');
+			overlay.classList.add('active');
+			popup.classList.add('active');
+			function cerrar(){
+				var overlay = document.getElementById('overlay');
+				var popup = document.getElementById('popup');
+				overlay.classList.remove('active');
+				popup.classList.remove('active');
+			}
+		}
+		
+		animalCapturado();
+	</script>
 </body>
 </html>
 
