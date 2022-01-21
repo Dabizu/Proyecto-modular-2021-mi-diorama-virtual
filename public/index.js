@@ -227,6 +227,11 @@ const cubeMaterial = new THREE.MeshStandardMaterial({
     color: '#ff0000', 
 })
 
+const floorMaterial = new THREE.MeshStandardMaterial({
+    wireframe: true,
+    color: '#00ff00', 
+})
+
 const createBox = (width, height, depth, position) =>{
     const mesh = new THREE.Mesh(cubeGeometry,cubeMaterial)
     mesh.scale.set(width,height,depth)
@@ -248,10 +253,40 @@ const createBox = (width, height, depth, position) =>{
         body        
     })
 }
+const createFloor = (width, height, depth, position) =>{
+    const mesh = new THREE.Mesh(cubeGeometry,floorMaterial)
+    mesh.scale.set(width,height,depth)
+
+    //mesh.castShadow = true
+    mesh.rotation.x = - Math.PI * 0.5
+    mesh.position.copy(position)
+    scene.add(mesh)
+
+    const shape = new CANNON.Box(new CANNON.Vec3(width * 0.5, height * 0.5, depth * 0.5))
+    const body = new CANNON.Body({
+        mass: 0,        
+        position: new CANNON.Vec3(0, 3, 0),
+        shape,
+        material: defaultMaterial
+    })
+    body.linearDamping = 0.1
+    body.position.copy(position)
+    body.quaternion.setFromAxisAngle(
+        new CANNON.Vec3(-1, 0, 0), Math.PI * 0.5
+    )
+    world.addBody(body)
+
+    objetsToUpdate.push({
+        mesh,
+        body        
+    })
+}
 
 createBox(20, 30, 20,{x: 0 ,y: 15 ,z: 90})
 
+createFloor(150,385, 5,{x: 0 ,y: -2 ,z: -40})
 
+/*
 const piso1 = new THREE.Mesh(
     new THREE.BoxBufferGeometry(150,385, 5), // SUSTITUIR AQUI
     new THREE.MeshStandardMaterial({
@@ -307,8 +342,6 @@ arbol1.position.y = 15
 arbol1.position.z = 90
 scene.add(arbol1)
 
-
-
 //FISICAS Arbol 1
 const arbol1Shape = new CANNON.Box(new CANNON.Vec3(20,20, 30))
 const arbol1Body = new CANNON.Body()
@@ -325,11 +358,10 @@ world.addBody(arbol1Body)
 //-----------------------
 //Pruebas
 
-
 const sphereShape = new CANNON.Sphere(10)  // DIAMETRO
 const sphereBody = new CANNON.Body({
     mass: 1,
-    position: new CANNON.Vec3(0 ,50 ,90), //x, y, z //POS ARBOL 
+    position: new CANNON.Vec3(0 ,50 ,70), //x, y, z //POS ARBOL 0 ,50 ,90
     shape: sphereShape,
     material: defaultMaterial
     
@@ -344,30 +376,11 @@ const sphere = new THREE.Mesh(
     })
 )
 sphere.castShadow = true
-
 sphere.position.y = 40
-
 scene.add(sphere)
 //__
 
 //agregamos luz
-/*
-const light = new THREE.AmbientLight(0x404040); // soft white light
-scene.add(light);
-
-const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444);
-hemiLight.position.set(0, 200, 0);
-scene.add(hemiLight);
-
-const dirLight = new THREE.DirectionalLight(0xffffff);
-dirLight.position.set(0, 200, 100);
-dirLight.castShadow = true;
-dirLight.shadow.camera.top = 180;
-dirLight.shadow.camera.bottom = - 100;
-dirLight.shadow.camera.left = - 120;
-dirLight.shadow.camera.right = 120;
-scene.add(dirLight);*/
-
 const directionalLight = new THREE.DirectionalLight('#ffffff', 4)
 directionalLight.castShadow = true
 directionalLight.shadow.camera.far = 15
