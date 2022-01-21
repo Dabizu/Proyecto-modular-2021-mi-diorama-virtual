@@ -63,7 +63,8 @@ app.get('/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/error' }),
   function(req, res) {
     // Successful authentication, redirect success.
-    res.redirect('/success');
+    //res.redirect('/success');
+    res.sendfile(__dirname+"/home.html");
   });
 //termino la autenticacion de google
 app.post("/login", (req, res) => {
