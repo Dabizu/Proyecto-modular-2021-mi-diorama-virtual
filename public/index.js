@@ -4,20 +4,24 @@ import { STLLoader } from './jsm/loaders/STLLoader.js';
 import { OrbitControls } from './jsm/controls/OrbitControls.js';
 import { FBXLoader } from './jsm/loaders/FBXLoader.js';
 import { GLTFLoader } from './jsm/loaders/GLTFLoader.js';
+//import CANNON from './cannon';
 
 const loadingBarElement = document.querySelector('.loading-bar')
 const loadingManager = new THREE.LoadingManager(
     //LOADER
     ()=>
     {
-        gsap.delayedCall(0.5, ()=>{
-            gsap.to(overlayMaterial.uniforms.uAlpha, {duration: 3, value: 0})
+        //gsap.delayedCall(0.5, ()=>{
+         //   gsap.to(overlayMaterial.uniforms.uAlpha, {duration: 3, value: 0})
+          //  loadingBarElement.classList.add('ended')
+          //  loadingBarElement.style.transform = ''
+        //})
+        window.setTimeout(()=>{
+            gsap.to(overlayMaterial.uniforms.uAlpha, {duration: 3, value: 0, delay:1 })
             loadingBarElement.classList.add('ended')
             loadingBarElement.style.transform = ''
-        })
-       // window.setTimeout(()=>{
-            
-       // }, 500)
+
+       }, 500)
         
     },
     //PROGRESS
@@ -56,9 +60,9 @@ texture.load('atardecer.jpg', function (tex) {
 
 const overlayGeometry = new THREE.PlaneGeometry(2, 2, 1, 1)
 const overlayMaterial = new THREE.ShaderMaterial({
-   //wireframe: true,
-   //transparent: true,
-   transparent: false,
+   wireframe: true,
+   transparent: true,
+   //transparent: false,
    uniforms:
    {
        uAlpha:{value: 1  }
@@ -168,7 +172,111 @@ gltfLoader.load("3dmodels/Escenario3.gltf", function (obj) {
     scene.add(obj.scene);
     //objetos.add(obj);
 });
-scene.add(objetos);
+//scene.add(objetos);
+
+
+
+//FISICAS-------------------------------------------------
+const world = new CANNON.World()
+world.broadphase = new CANNON.SAPBroadphase(world)
+world.allowSleep = true
+world.gravity.set(0, -9.82, 0)
+//MATERIAL
+const defaultMaterial = new CANNON.Material('default')
+//
+//const concretePlasticContactMaterial = new CANNON.ContactMaterial(
+const defaultContactMaterial = new CANNON.ContactMaterial(
+    defaultMaterial,
+    defaultMaterial,
+    {
+        friction: 0.1,
+        restitution: 0.7
+    }
+)
+world.addContactMaterial(defaultContactMaterial)
+world.defaultContactMaterial = defaultContactMaterial
+
+// PISO:1 
+const piso1 = new THREE.Mesh(
+    new THREE.BoxBufferGeometry(150,385, 5),
+    new THREE.MeshStandardMaterial({
+        wireframe: true,
+        color: '#0000ff', 
+    })
+)
+piso1.rotation.x = - Math.PI * 0.5
+piso1.position.y = -2
+piso1.position.z = -40
+scene.add(piso1)
+
+//FISICAS PISO:1
+const piso1Shape = new CANNON.Box(new CANNON.Vec3(150,385, 5))
+const piso1Body = new CANNON.Body()
+piso1Body.position = new CANNON.Vec3(0 ,-2 ,-40)
+piso1Body.linearDamping = 0.1
+piso1Body.mass = 0
+piso1Body.material = defaultMaterial
+piso1Body.addShape(piso1Shape)
+piso1Body.quaternion.setFromAxisAngle(
+    new CANNON.Vec3(-1, 0, 0), Math.PI * 0.5
+)
+world.addBody(piso1Body)
+
+//FISICAS ARBOL:1
+const arbol1 = new THREE.Mesh(
+    new THREE.BoxBufferGeometry(20,20, 30),
+    new THREE.MeshStandardMaterial({
+        wireframe: true,
+        color: '#0000ff', 
+    })
+)
+arbol1.rotation.x = - Math.PI * 0.5
+arbol1.position.x = 0
+arbol1.position.y = 15
+arbol1.position.z = 90
+scene.add(arbol1)
+
+//FISICAS Arbol 1
+const arbol1Shape = new CANNON.Box(new CANNON.Vec3(20,20, 30))
+const arbol1Body = new CANNON.Body()
+arbol1Body.position = new CANNON.Vec3(0 ,15 ,90)
+arbol1Body.linearDamping = 0.1
+arbol1Body.mass = 0
+arbol1Body.material = defaultMaterial
+arbol1Body.addShape(arbol1Shape)
+arbol1Body.quaternion.setFromAxisAngle(
+    new CANNON.Vec3(-1, 0, 0), Math.PI * 0.5
+)
+world.addBody(arbol1Body)
+
+//-----------------------
+//Pruebas
+
+
+const sphereShape = new CANNON.Sphere(10)  // DIAMETRO
+const sphereBody = new CANNON.Body({
+    mass: 1,
+    position: new CANNON.Vec3(0 ,40 ,90), //x, y, z
+    shape: sphereShape,
+    material: defaultMaterial
+    
+})
+world.addBody(sphereBody)
+
+const sphere = new THREE.Mesh(
+    new THREE.SphereGeometry(10, 10, 10), // DIAMETRO
+    new THREE.MeshStandardMaterial({
+        metalness: 0.3,
+        roughness: 0.4,
+    })
+)
+sphere.castShadow = true
+
+sphere.position.y = 40
+
+scene.add(sphere)
+//__
+
 //agregamos luz
 /*
 const light = new THREE.AmbientLight(0x404040); // soft white light
@@ -292,7 +400,7 @@ const onKeyUp = function (event) {
 
 document.addEventListener('keydown', onKeyDown);
 document.addEventListener('keyup', onKeyUp);
-
+/*
 function colisionBloques(){
 	for (var i = 0; i < numeroCosas; i++) {
 		if(Math.sqrt(Math.pow((posx - cubos[i].position.x), 2) + Math.pow((posz - cubos[i].position.z), 2)) < 100){
@@ -300,12 +408,23 @@ function colisionBloques(){
 		}
 	}
 }
+*/
+const clock = new THREE.Clock()
+let oldElapsedTime = 0
 
 
 const animate = function () {
+    const elapsedTime = clock.getElapsedTime()
+    const deltaTime = elapsedTime - oldElapsedTime
+    oldElapsedTime = elapsedTime
+
+    world.step(1/60, deltaTime, 3)
+    sphere.position.copy(sphereBody.position)
+
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
-    colisionBloques();
+   // colisionBloques();
+    
 };
 
 animate();
