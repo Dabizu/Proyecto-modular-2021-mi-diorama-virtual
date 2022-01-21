@@ -21,5 +21,8 @@
     "passport": "^0.5.2",
     "passport-google-oauth": "^2.0.0",
     "socket.io": "^4.3.2"
+  },
+  "devDependencies": {
+    "dat.gui": "^0.7.7"
   }
 }

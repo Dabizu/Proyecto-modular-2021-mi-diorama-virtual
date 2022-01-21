@@ -5,6 +5,27 @@ import { OrbitControls } from './jsm/controls/OrbitControls.js';
 import { FBXLoader } from './jsm/loaders/FBXLoader.js';
 import { GLTFLoader } from './jsm/loaders/GLTFLoader.js';
 //import CANNON from './cannon';
+import * as dat from './threejs/libs/dat.gui.module.js';
+
+
+let fisicasVisibles = true;
+const debugObject = {}
+const gui = new dat.GUI({
+    width: 200
+})
+
+
+debugObject.mostrarFisicas = () =>{
+    if (fisicasVisibles == false){
+        fisicasVisibles = true
+        console.log(fisicasVisibles)
+    }else{(fisicasVisibles == true)
+        fisicasVisibles = false
+        console.log(fisicasVisibles)
+    }    
+}
+
+gui.add(debugObject, 'mostrarFisicas')
 
 const loadingBarElement = document.querySelector('.loading-bar')
 const loadingManager = new THREE.LoadingManager(
@@ -178,6 +199,8 @@ gltfLoader.load("3dmodels/Escenario3.gltf", function (obj) {
 
 //FISICAS-------------------------------------------------
 const world = new CANNON.World()
+const objetsToUpdate = []
+
 world.broadphase = new CANNON.SAPBroadphase(world)
 world.allowSleep = true
 world.gravity.set(0, -9.82, 0)
@@ -195,10 +218,42 @@ const defaultContactMaterial = new CANNON.ContactMaterial(
 )
 world.addContactMaterial(defaultContactMaterial)
 world.defaultContactMaterial = defaultContactMaterial
-
+//MOSTRAR MALLA DEL PISO
 // PISO:1 
+
+const cubeGeometry = new THREE.BoxBufferGeometry(1, 1, 1)
+const cubeMaterial = new THREE.MeshStandardMaterial({
+    wireframe: true,
+    color: '#ff0000', 
+})
+
+const createBox = (width, height, depth, position) =>{
+    const mesh = new THREE.Mesh(cubeGeometry,cubeMaterial)
+    mesh.scale.set(width,height,depth)
+    mesh.castShadow = true
+    mesh.position.copy(position)
+    scene.add(mesh)
+
+    const shape = new CANNON.Box(new CANNON.Vec3(width * 0.5, height * 0.5, depth * 0.5))
+    const body = new CANNON.Body({
+    mass: 1,
+    position: new CANNON.Vec3(0, 3, 0),
+    shape,
+    })
+    body.position.copy(position)
+    world.addBody(body)
+
+    objetsToUpdate.push({
+        mesh,
+        body        
+    })
+}
+
+createBox(20, 30, 20,{x: 0 ,y: 15 ,z: 90})
+
+
 const piso1 = new THREE.Mesh(
-    new THREE.BoxBufferGeometry(150,385, 5),
+    new THREE.BoxBufferGeometry(150,385, 5), // SUSTITUIR AQUI
     new THREE.MeshStandardMaterial({
         wireframe: true,
         color: '#0000ff', 
@@ -221,20 +276,38 @@ piso1Body.quaternion.setFromAxisAngle(
     new CANNON.Vec3(-1, 0, 0), Math.PI * 0.5
 )
 world.addBody(piso1Body)
-
+/*
+//FISICAS PISO:2
+const piso2Shape = new CANNON.Box(new CANNON.Vec3(150,385, 5))
+const piso2Body = new CANNON.Body()
+piso2Body.position = new CANNON.Vec3(0 ,-2 ,-40)
+piso2Body.linearDamping = 0.1
+piso2Body.mass = 0
+piso2Body.material = defaultMaterial
+piso2Body.addShape(piso2Shape)
+piso2Body.quaternion.setFromAxisAngle(
+    new CANNON.Vec3(-1, 0, 0), Math.PI * 0.5
+)
+world.addBody(piso2Body)
+*/
 //FISICAS ARBOL:1
+/*
 const arbol1 = new THREE.Mesh(
     new THREE.BoxBufferGeometry(20,20, 30),
     new THREE.MeshStandardMaterial({
-        wireframe: true,
+         
+        wireframe: fisicasVisibles,
         color: '#0000ff', 
     })
 )
+arbol1.visible = fisicasVisibles
 arbol1.rotation.x = - Math.PI * 0.5
 arbol1.position.x = 0
 arbol1.position.y = 15
 arbol1.position.z = 90
 scene.add(arbol1)
+
+
 
 //FISICAS Arbol 1
 const arbol1Shape = new CANNON.Box(new CANNON.Vec3(20,20, 30))
@@ -248,7 +321,7 @@ arbol1Body.quaternion.setFromAxisAngle(
     new CANNON.Vec3(-1, 0, 0), Math.PI * 0.5
 )
 world.addBody(arbol1Body)
-
+*/
 //-----------------------
 //Pruebas
 
@@ -256,7 +329,7 @@ world.addBody(arbol1Body)
 const sphereShape = new CANNON.Sphere(10)  // DIAMETRO
 const sphereBody = new CANNON.Body({
     mass: 1,
-    position: new CANNON.Vec3(0 ,40 ,90), //x, y, z
+    position: new CANNON.Vec3(0 ,50 ,90), //x, y, z //POS ARBOL 
     shape: sphereShape,
     material: defaultMaterial
     
@@ -313,6 +386,16 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap
 renderer.setClearColor('#211d20')
 
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+//COLORFONDO
+
+debugObject.clearColor = '#211d20'
+renderer.setClearColor(debugObject.clearColor)
+gui
+    .addColor(debugObject,'clearColor')
+    .onChange(()=>{
+        renderer.setClearColor(debugObject.clearColor)
+    })
+
 //añadimos el controlador orbital
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.target.set(0, 100, 0);
