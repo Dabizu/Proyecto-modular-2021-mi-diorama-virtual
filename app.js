@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const CryptoJS = require("crypto-js");
 const express = require("express");
 const app = express();
+const session = require('express-session');
 const cors = require("cors");
 const port = process.env.PORT || 3000
 const MongoClient = require('mongodb').MongoClient;
@@ -12,9 +13,59 @@ const url = "mongodb+srv://" + user + ":" + password + "@cluster0.s9ejk.mongodb.
 
 app.use(cors());
 app.use(express.static(__dirname + '/public'));
+app.use(session({
+  resave: false,
+  saveUninitialized: true,
+  secret: 'SECRET' 
+}));
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/public/login.html");
 });
+/*  PASSPORT SETUP  */
+
+const passport = require('passport');
+var userProfile;
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.get('/success', (req, res) => res.send(userProfile));
+app.get('/error', (req, res) => res.send("error logging in"));
+
+passport.serializeUser(function(user, cb) {
+  cb(null, user);
+});
+
+passport.deserializeUser(function(obj, cb) {
+  cb(null, obj);
+});
+
+/*  Google AUTH  */
+ 
+const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+const GOOGLE_CLIENT_ID = '309462008688-3gq1st8ur5si8ltm619qb9ipu078ba6b.apps.googleusercontent.com';
+const GOOGLE_CLIENT_SECRET = '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';
+passport.use(new GoogleStrategy({
+    clientID: GOOGLE_CLIENT_ID,
+    clientSecret: GOOGLE_CLIENT_SECRET,
+    callbackURL: "http://localhost:3000/auth/google/callback"
+  },
+  function(accessToken, refreshToken, profile, done) {
+      userProfile=profile;
+      return done(null, userProfile);
+  }
+));
+ 
+app.get('/auth/google', 
+  passport.authenticate('google', { scope : ['profile', 'email'] }));
+ 
+app.get('/auth/google/callback', 
+  passport.authenticate('google', { failureRedirect: '/error' }),
+  function(req, res) {
+    // Successful authentication, redirect success.
+    res.redirect('/success');
+  });
+//termino la autenticacion de google
 app.post("/login", (req, res) => {
   var correo = req.param('correo');
   var password = req.param('password');
@@ -80,8 +131,6 @@ app.get("/planta",(req, res)=>{
 app.get("/prueba",(req, res)=>{
   res.sendFile(__dirname+"/public/prueba.html");
 });
-
-
 
 app.post("/registrar", (req, res) => {
   var nombre = req.param('nombre');
