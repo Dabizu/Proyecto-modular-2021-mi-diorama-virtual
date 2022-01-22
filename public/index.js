@@ -4,28 +4,29 @@ import { STLLoader } from './jsm/loaders/STLLoader.js';
 import { OrbitControls } from './jsm/controls/OrbitControls.js';
 import { FBXLoader } from './jsm/loaders/FBXLoader.js';
 import { GLTFLoader } from './jsm/loaders/GLTFLoader.js';
-//import CANNON from './cannon';
 import * as dat from './threejs/libs/dat.gui.module.js';
 
-
 let fisicasVisibles = true;
+
 const debugObject = {}
 const gui = new dat.GUI({
-    width: 200
+    width: 250
 })
 
 
 debugObject.mostrarFisicas = () =>{
     if (fisicasVisibles == false){
-        fisicasVisibles = true
-        console.log(fisicasVisibles)
+        fisicasVisibles = true        
     }else{(fisicasVisibles == true)
-        fisicasVisibles = false
-        console.log(fisicasVisibles)
+        fisicasVisibles = false        
     }    
 }
 
+debugObject.probarFisicas = () =>{
+    createSphere(10, {x:0, y: 20, z: 50})
+}
 gui.add(debugObject, 'mostrarFisicas')
+gui.add(debugObject, 'probarFisicas')
 
 const loadingBarElement = document.querySelector('.loading-bar')
 const loadingManager = new THREE.LoadingManager(
@@ -112,7 +113,9 @@ const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerH
 
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
-camera.position.set(100, 100, 100)
+camera.position.set(190, 120, 100)
+
+//camera.position.set(100, 100, 100)
 //camera.position.set(100, 40, 100);
 
 /*
@@ -194,7 +197,7 @@ gltfLoader.load("3dmodels/Escenario3.gltf", function (obj) {
     //objetos.add(obj);
 });
 gltfLoader2.load("3dmodels/Fox/gltf/Fox2.gltf",function(objfox){
-    objfox.scene.scale.set(0.5,0.5,0.5);
+    objfox.scene.scale.set(0.2,0.2,0.2);
     personew.add(objfox.scene)
 });
 scene.add(personew);
@@ -287,108 +290,55 @@ const createFloor = (width, height, depth, position) =>{
     })
 }
 
+const sphereGeometry = new THREE.SphereBufferGeometry(1, 10, 10)
+const sphereMaterial = new THREE.MeshStandardMaterial({
+    metalness: 0.3,
+    roughness: 0.4,    
+})
+const createSphere = (radius, position) =>
+{
+    //THREE.JS MESH
+    const mesh = new THREE.Mesh(sphereGeometry,sphereMaterial)
+    mesh.scale.set(radius, radius, radius)
+    mesh.castShadow = true
+    mesh.position.copy(position)
+    scene.add(mesh)
+
+    // Cannon.js body
+    const shape = new CANNON.Sphere(radius)
+    const body = new CANNON.Body({
+    mass: 1,
+    position: new CANNON.Vec3(0, 30, 0),
+    shape,
+    material: defaultMaterial
+})
+body.position.copy(position)
+world.addBody(body)
+    //SAVE OBJECTS TO UPDATE
+    objetsToUpdate.push({
+        mesh,
+        body        
+    })
+}
+
+//ARBOL:1 
 createBox(20, 30, 20,{x: 0 ,y: 15 ,z: 90})
 
+//PISO:1
+//| Atras | Ancho | Volumen|
 createFloor(150,385, 5,{x: 0 ,y: -2 ,z: -40})
+//PISO:2                                           // +izquierda ,-Derecha
+createFloor(550,1956, 5,{x: -380 ,y: 20 ,z: -810}) //X:Profundidad, Y:Altura, Z:Lados
+//PISO:3
+createFloor(1550,1450, 5,{x: -1700 ,y: 30 ,z: -430}) 
+//PISO:4
+//createFloor(1550,1250, 5,{x: 400 ,y: -12 ,z: -800})
 
-/*
-const piso1 = new THREE.Mesh(
-    new THREE.BoxBufferGeometry(150,385, 5), // SUSTITUIR AQUI
-    new THREE.MeshStandardMaterial({
-        wireframe: true,
-        color: '#0000ff', 
-    })
-)
-piso1.rotation.x = - Math.PI * 0.5
-piso1.position.y = -2
-piso1.position.z = -40
-scene.add(piso1)
-
-//FISICAS PISO:1
-const piso1Shape = new CANNON.Box(new CANNON.Vec3(150,385, 5))
-const piso1Body = new CANNON.Body()
-piso1Body.position = new CANNON.Vec3(0 ,-2 ,-40)
-piso1Body.linearDamping = 0.1
-piso1Body.mass = 0
-piso1Body.material = defaultMaterial
-piso1Body.addShape(piso1Shape)
-piso1Body.quaternion.setFromAxisAngle(
-    new CANNON.Vec3(-1, 0, 0), Math.PI * 0.5
-)
-world.addBody(piso1Body)
-/*
-//FISICAS PISO:2
-const piso2Shape = new CANNON.Box(new CANNON.Vec3(150,385, 5))
-const piso2Body = new CANNON.Body()
-piso2Body.position = new CANNON.Vec3(0 ,-2 ,-40)
-piso2Body.linearDamping = 0.1
-piso2Body.mass = 0
-piso2Body.material = defaultMaterial
-piso2Body.addShape(piso2Shape)
-piso2Body.quaternion.setFromAxisAngle(
-    new CANNON.Vec3(-1, 0, 0), Math.PI * 0.5
-)
-world.addBody(piso2Body)
-*/
-//FISICAS ARBOL:1
-/*
-const arbol1 = new THREE.Mesh(
-    new THREE.BoxBufferGeometry(20,20, 30),
-    new THREE.MeshStandardMaterial({
-         
-        wireframe: fisicasVisibles,
-        color: '#0000ff', 
-    })
-)
-arbol1.visible = fisicasVisibles
-arbol1.rotation.x = - Math.PI * 0.5
-arbol1.position.x = 0
-arbol1.position.y = 15
-arbol1.position.z = 90
-scene.add(arbol1)
-
-//FISICAS Arbol 1
-const arbol1Shape = new CANNON.Box(new CANNON.Vec3(20,20, 30))
-const arbol1Body = new CANNON.Body()
-arbol1Body.position = new CANNON.Vec3(0 ,15 ,90)
-arbol1Body.linearDamping = 0.1
-arbol1Body.mass = 0
-arbol1Body.material = defaultMaterial
-arbol1Body.addShape(arbol1Shape)
-arbol1Body.quaternion.setFromAxisAngle(
-    new CANNON.Vec3(-1, 0, 0), Math.PI * 0.5
-)
-world.addBody(arbol1Body)
-*/
-//-----------------------
-//Pruebas
-
-const sphereShape = new CANNON.Sphere(10)  // DIAMETRO
-const sphereBody = new CANNON.Body({
-    mass: 1,
-    position: new CANNON.Vec3(0 ,50 ,70), //x, y, z //POS ARBOL 0 ,50 ,90
-    shape: sphereShape,
-    material: defaultMaterial
-    
-})
-world.addBody(sphereBody)
-
-const sphere = new THREE.Mesh(
-    new THREE.SphereGeometry(10, 10, 10), // DIAMETRO
-    new THREE.MeshStandardMaterial({
-        metalness: 0.3,
-        roughness: 0.4,
-    })
-)
-sphere.castShadow = true
-sphere.position.y = 40
-scene.add(sphere)
-//__
 
 //agregamos luz
 const directionalLight = new THREE.DirectionalLight('#ffffff', 4)
 directionalLight.castShadow = true
-directionalLight.shadow.camera.far = 15
+directionalLight.shadow.camera.far = 30 // 15
 directionalLight.shadow.mapSize.set(1024, 1024)
 directionalLight.shadow.normalBias = 0.05
 directionalLight.position.set(3.5, 2, - 1.25)
@@ -520,8 +470,13 @@ const animate = function () {
     oldElapsedTime = elapsedTime
 
     world.step(1/60, deltaTime, 3)
-    sphere.position.copy(sphereBody.position)
 
+    for(const object of objetsToUpdate)
+    {
+        object.mesh.visible = fisicasVisibles
+        object.mesh.position.copy(object.body.position)
+        object.mesh.quaternion.copy(object.body.quaternion)
+    }
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
    // colisionBloques();
