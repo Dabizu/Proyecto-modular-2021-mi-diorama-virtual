@@ -177,22 +177,27 @@ var personew=new THREE.Group();
 var perso=new THREE.Object3D();
 var personajeCaminando=new THREE.Object3D();
 var personajeEstatico=new THREE.Object3D();
-
+/*
 fbx.load('3dmodels/chibi.fbx',function(personaje){
     personaje.position.set(-100,0,-100);
     perso=personaje;
     //grupoPersonaje.add(personaje);
     //sessionStorage.setItem('personaje',personaje);
     scene.add(personaje);
-});
+});*/
 //grupoPersonaje.add(sessionStorage.getItem('personaje'));
-scene.add(perso);
-//const gltfLoader = new GLTFLoader();
+
+const gltfLoader2 = new GLTFLoader();
 gltfLoader.load("3dmodels/Escenario3.gltf", function (obj) {
     obj.scene.scale.set(20,20,20);
     scene.add(obj.scene);
     //objetos.add(obj);
 });
+gltfLoader2.load("3dmodels/Fox/gltf/Fox2.gltf",function(objfox){
+    objfox.scene.scale.set(0.5,0.5,0.5);
+    personew.add(objfox.scene)
+});
+scene.add(personew);
 //scene.add(objetos);
 
 
@@ -424,7 +429,7 @@ const onKeyDown = function (event) {
             moveForward = true;
             console.log("adelante");
             console.log(perso.position.x);
-            perso.position.x -= 5;
+            personew.position.x -= 5;
             x-=5;
             camera.position.x=x;
             
@@ -434,7 +439,7 @@ const onKeyDown = function (event) {
         case 'KeyA':
             moveLeft = true;
             console.log("izquierda");
-            perso.position.z += 5;
+            personew.position.z += 5;
             z+=5;
             camera.position.z=z;
             break;
@@ -443,7 +448,7 @@ const onKeyDown = function (event) {
         case 'KeyS':
             moveBackward = true;
             console.log("atras");
-            perso.position.x += 5;
+            personew.position.x += 5;
             x+=5;
             camera.position.x=x;
             break;
@@ -452,7 +457,7 @@ const onKeyDown = function (event) {
         case 'KeyD':
             moveRight = true;
             console.log("derecha");
-            perso.position.z -= 5;
+            personew.position.z -= 5;
             z-=5;
             camera.position.z=z;
             break;
