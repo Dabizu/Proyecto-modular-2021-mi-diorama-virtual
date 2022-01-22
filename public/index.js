@@ -249,7 +249,7 @@ const createBox = (width, height, depth, position) =>{
 
     const shape = new CANNON.Box(new CANNON.Vec3(width * 0.5, height * 0.5, depth * 0.5))
     const body = new CANNON.Body({
-    mass: 1,
+    mass: 0,
     position: new CANNON.Vec3(0, 3, 0),
     shape,
     })
@@ -326,11 +326,11 @@ createBox(20, 30, 20,{x: 0 ,y: 15 ,z: 90})
 
 //PISO:1
 //| Atras | Ancho | Volumen|
-createFloor(150,385, 5,{x: 0 ,y: -2 ,z: -40})
-//PISO:2                                           // +izquierda ,-Derecha
-createFloor(550,1956, 5,{x: -380 ,y: 20 ,z: -810}) //X:Profundidad, Y:Altura, Z:Lados
+createFloor(150,385, 5,{x: 0 ,y: -2 ,z: -40})       //| +Adelante ,  | -Atras
+//PISO:2                                           // | +izquierda , | -Derecha 
+createFloor(2346,3400, 5,{x: -1280 ,y: 20 ,z: -90}) //X:Profundidad, Y:Altura, Z:Lados
 //PISO:3
-createFloor(1550,1450, 5,{x: -1700 ,y: 30 ,z: -430}) 
+//createFloor(1600,1656, 5,{x: -1644 ,y: 30 ,z: -550}) 
 //PISO:4
 //createFloor(1550,1250, 5,{x: 400 ,y: -12 ,z: -800})
 
