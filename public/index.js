@@ -240,6 +240,7 @@ const floorMaterial = new THREE.MeshStandardMaterial({
     color: '#00ff00', 
 })
 
+
 const createBox = (width, height, depth, position) =>{
     const mesh = new THREE.Mesh(cubeGeometry,cubeMaterial)
     mesh.scale.set(width,height,depth)
@@ -368,6 +369,10 @@ gui
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.target.set(0, 100, 0);
 controls.update();
+
+//Cargar modelos de animales---------------------
+
+
 
 //añadimos el control del teclado
 const onKeyDown = function (event) {
