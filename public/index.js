@@ -196,12 +196,34 @@ gltfLoader.load("3dmodels/Escenario3.gltf", function (obj) {
     scene.add(obj.scene);
     //objetos.add(obj);
 });
+
+let mixer = null
+let action = null
+
+const actualizarMovimientos = []
 gltfLoader2.load("3dmodels/Fox/gltf/Fox2.gltf",function(objfox){
+    
+    //const foxAnimations = new THREE.AnimationClip(objfox.animations)
+    //console.log(foxAnimations)
+    mixer = new THREE.AnimationMixer(objfox.scene)
+    //console.log(mixer)
+    //console.log(objfox)
+    action = mixer.clipAction(objfox.animations[2])
+    //console.log(action)
+    //action = mixer.clipAction('Run')        
+    //action.play()
+
+    
     objfox.scene.scale.set(0.2,0.2,0.2);
     personew.add(objfox.scene)
+    
+    //personew.material = defaultMaterial
+    //personew.mass = 1
+
 });
 scene.add(personew);
 //scene.add(objetos);
+
 
 
 
@@ -381,40 +403,46 @@ const onKeyDown = function (event) {
 
         case 'ArrowUp':
         case 'KeyW':
-            moveForward = true;
+            moveForward = true;        
+            //mixer.stopAllAction()
+            action.play()           
             console.log("adelante");
-            console.log(perso.position.x);
+            //console.log(perso.position.x);
             personew.position.x -= 5;
             x-=5;
-            camera.position.x=x;
+            //camera.position.x=x;
             
             break;
 
         case 'ArrowLeft':
         case 'KeyA':
             moveLeft = true;
+            action.play()
             console.log("izquierda");
+            
             personew.position.z += 5;
             z+=5;
-            camera.position.z=z;
+            //camera.position.z=z;
             break;
 
         case 'ArrowDown':
         case 'KeyS':
             moveBackward = true;
+            action.play()
             console.log("atras");
             personew.position.x += 5;
             x+=5;
-            camera.position.x=x;
+            //camera.position.x=x;
             break;
 
         case 'ArrowRight':
         case 'KeyD':
             moveRight = true;
+            action.play()
             console.log("derecha");
             personew.position.z -= 5;
             z-=5;
-            camera.position.z=z;
+            //camera.position.z=z;
             break;
 
         case 'Space':
@@ -432,21 +460,25 @@ const onKeyUp = function (event) {
 
         case 'ArrowUp':
         case 'KeyW':
+            mixer.stopAllAction()            
             moveForward = false;
             break;
 
         case 'ArrowLeft':
         case 'KeyA':
+            mixer.stopAllAction()  
             moveLeft = false;
             break;
 
         case 'ArrowDown':
         case 'KeyS':
+            mixer.stopAllAction()  
             moveBackward = false;
             break;
 
         case 'ArrowRight':
         case 'KeyD':
+            mixer.stopAllAction()  
             moveRight = false;
             break;
 
@@ -472,7 +504,14 @@ let oldElapsedTime = 0
 const animate = function () {
     const elapsedTime = clock.getElapsedTime()
     const deltaTime = elapsedTime - oldElapsedTime
+    //console.log(deltaTime)
     oldElapsedTime = elapsedTime
+    //MIXER ZORRO
+    if(mixer != null){
+
+        mixer.update(deltaTime)
+    }
+    
 
     world.step(1/60, deltaTime, 3)
 
@@ -482,6 +521,7 @@ const animate = function () {
         object.mesh.position.copy(object.body.position)
         object.mesh.quaternion.copy(object.body.quaternion)
     }
+
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
    // colisionBloques();
