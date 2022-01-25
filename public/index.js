@@ -113,7 +113,10 @@ const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerH
 
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
-camera.position.set(190, 120, 100)
+camera.position.set(190, 30, 100)
+//camera.lookAt(personew.position.x,personew.position.y,personew.position.z);
+//var posicionPersonaje = new THREE.Vector3();
+
 
 //camera.position.set(100, 100, 100)
 //camera.position.set(100, 40, 100);
@@ -361,7 +364,7 @@ createFloor(2346,3400, 5,{x: -1280 ,y: 20 ,z: -90}) //X:Profundidad, Y:Altura, Z
 //agregamos luz
 const directionalLight = new THREE.DirectionalLight('#ffffff', 4)
 directionalLight.castShadow = true
-directionalLight.shadow.camera.far = 30 // 15
+directionalLight.shadow.camera.far = 5 // 15
 directionalLight.shadow.mapSize.set(1024, 1024)
 directionalLight.shadow.normalBias = 0.05
 directionalLight.position.set(3.5, 2, - 1.25)
@@ -388,17 +391,18 @@ gui
     })
 
 //añadimos el controlador orbital
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.target.set(0, 100, 0);
-controls.update();
 
-//Cargar modelos de animales---------------------
+
+const controls = new OrbitControls(camera, renderer.domElement);
 
 
 const velocidadMovimientoZorro = 2
 //añadimos el control del teclado
 const onKeyDown = function (event) {
     //console.log(event.code);
+    camera.lookAt(personew.position)
+    controls.target.set(personew.position.x-10,50,personew.position.z-10);
+    controls.update();
     switch (event.code) {
 
         case 'ArrowUp':
@@ -409,8 +413,9 @@ const onKeyDown = function (event) {
             personew.position.x -= velocidadMovimientoZorro;
             x-=velocidadMovimientoZorro;
             personew.rotation.y =  0
-            //camera.position.x=x;
             
+            camera.position.x=x;
+            //console.log()
             break;
 
         case 'ArrowLeft':
@@ -422,7 +427,7 @@ const onKeyDown = function (event) {
             personew.position.z += velocidadMovimientoZorro;
 
             z+=velocidadMovimientoZorro;
-            //camera.position.z=z;
+            camera.position.z=z;
             break;
 
         case 'ArrowDown':
@@ -433,7 +438,7 @@ const onKeyDown = function (event) {
             personew.position.x += velocidadMovimientoZorro;
             x+=velocidadMovimientoZorro;
             personew.rotation.y = Math.PI
-            //camera.position.x=x;
+            camera.position.x=x;
             break;
 
         case 'ArrowRight':
@@ -444,7 +449,7 @@ const onKeyDown = function (event) {
             personew.rotation.y = - Math.PI / 2
             personew.position.z -= velocidadMovimientoZorro;
             z-=velocidadMovimientoZorro;
-            //camera.position.z=z;
+            camera.position.z=z;
             break;
 
         case 'Space':
