@@ -113,27 +113,10 @@ const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerH
 
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
-camera.position.set(190, 30, 100)
-//camera.lookAt(personew.position.x,personew.position.y,personew.position.z);
-//var posicionPersonaje = new THREE.Vector3();
+camera.position.set(100, 80, 100)
+//camera.position.set(50, 50, 40)
 
 
-//camera.position.set(100, 100, 100)
-//camera.position.set(100, 40, 100);
-
-/*
-const geometry = new THREE.TextGeometry( 'Hello three.js!', {
-    font: font,
-    size: 80,
-    height: 5,
-    curveSegments: 12,
-    bevelEnabled: true,
-    bevelThickness: 10,
-    bevelSize: 8,
-    bevelOffset: 0,
-    bevelSegments: 5
-} );*/
-//scene.add(geometry);
 
 // AUDIO
 
@@ -205,23 +188,11 @@ let action = null
 
 const actualizarMovimientos = []
 gltfLoader2.load("3dmodels/Fox/gltf/Fox1.gltf",function(objfox){
-    
-    //const foxAnimations = new THREE.AnimationClip(objfox.animations)
-    //console.log(foxAnimations)
-    mixer = new THREE.AnimationMixer(objfox.scene)
-    //console.log(mixer)
-    //console.log(objfox)
+    mixer = new THREE.AnimationMixer(objfox.scene)        
     action = mixer.clipAction(objfox.animations[2])
-    //console.log(action)
-    //action = mixer.clipAction('Run')        
-    //action.play()
-
-    
     objfox.scene.scale.set(0.2,0.2,0.2);
     personew.add(objfox.scene)
     
-    //personew.material = defaultMaterial
-    //personew.mass = 1
 
 });
 scene.add(personew);
@@ -364,7 +335,7 @@ createFloor(2346,3400, 5,{x: -1280 ,y: 20 ,z: -90}) //X:Profundidad, Y:Altura, Z
 //agregamos luz
 const directionalLight = new THREE.DirectionalLight('#ffffff', 4)
 directionalLight.castShadow = true
-directionalLight.shadow.camera.far = 5 // 15
+directionalLight.shadow.camera.far = 15 // 15
 directionalLight.shadow.mapSize.set(1024, 1024)
 directionalLight.shadow.normalBias = 0.05
 directionalLight.position.set(3.5, 2, - 1.25)
@@ -396,7 +367,7 @@ gui
 const controls = new OrbitControls(camera, renderer.domElement);
 
 
-const velocidadMovimientoZorro = 2
+const velocidadMovimientoZorro = 3
 //añadimos el control del teclado
 const onKeyDown = function (event) {
     //console.log(event.code);
@@ -421,8 +392,7 @@ const onKeyDown = function (event) {
         case 'ArrowLeft':
         case 'KeyA':
             moveLeft = true;
-            action.play()
-            console.log("izquierda");
+            action.play()            
             personew.rotation.y = Math.PI / 2
             personew.position.z += velocidadMovimientoZorro;
 
@@ -434,18 +404,19 @@ const onKeyDown = function (event) {
         case 'KeyS':
             moveBackward = true;
             action.play()
-            console.log("atras");
+            
             personew.position.x += velocidadMovimientoZorro;
             x+=velocidadMovimientoZorro;
             personew.rotation.y = Math.PI
             camera.position.x=x;
+           
             break;
 
         case 'ArrowRight':
         case 'KeyD':
             moveRight = true;
             action.play()
-            console.log("derecha");
+            
             personew.rotation.y = - Math.PI / 2
             personew.position.z -= velocidadMovimientoZorro;
             z-=velocidadMovimientoZorro;
