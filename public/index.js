@@ -201,7 +201,7 @@ let mixer = null
 let action = null
 
 const actualizarMovimientos = []
-gltfLoader2.load("3dmodels/Fox/gltf/Fox2.gltf",function(objfox){
+gltfLoader2.load("3dmodels/Fox/gltf/Fox1.gltf",function(objfox){
     
     //const foxAnimations = new THREE.AnimationClip(objfox.animations)
     //console.log(foxAnimations)
@@ -395,7 +395,7 @@ controls.update();
 //Cargar modelos de animales---------------------
 
 
-
+const velocidadMovimientoZorro = 2
 //añadimos el control del teclado
 const onKeyDown = function (event) {
     //console.log(event.code);
@@ -404,12 +404,11 @@ const onKeyDown = function (event) {
         case 'ArrowUp':
         case 'KeyW':
             moveForward = true;        
-            //mixer.stopAllAction()
-            action.play()           
-            console.log("adelante");
-            //console.log(perso.position.x);
-            personew.position.x -= 5;
-            x-=5;
+            
+            action.play()                               
+            personew.position.x -= velocidadMovimientoZorro;
+            x-=velocidadMovimientoZorro;
+            personew.rotation.y =  0
             //camera.position.x=x;
             
             break;
@@ -419,9 +418,10 @@ const onKeyDown = function (event) {
             moveLeft = true;
             action.play()
             console.log("izquierda");
-            
-            personew.position.z += 5;
-            z+=5;
+            personew.rotation.y = Math.PI / 2
+            personew.position.z += velocidadMovimientoZorro;
+
+            z+=velocidadMovimientoZorro;
             //camera.position.z=z;
             break;
 
@@ -430,8 +430,9 @@ const onKeyDown = function (event) {
             moveBackward = true;
             action.play()
             console.log("atras");
-            personew.position.x += 5;
-            x+=5;
+            personew.position.x += velocidadMovimientoZorro;
+            x+=velocidadMovimientoZorro;
+            personew.rotation.y = Math.PI
             //camera.position.x=x;
             break;
 
@@ -440,8 +441,9 @@ const onKeyDown = function (event) {
             moveRight = true;
             action.play()
             console.log("derecha");
-            personew.position.z -= 5;
-            z-=5;
+            personew.rotation.y = - Math.PI / 2
+            personew.position.z -= velocidadMovimientoZorro;
+            z-=velocidadMovimientoZorro;
             //camera.position.z=z;
             break;
 
