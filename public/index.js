@@ -367,7 +367,7 @@ gui
 const controls = new OrbitControls(camera, renderer.domElement);
 
 
-const velocidadMovimientoZorro = 3
+const velocidadMovimientoZorro = 1
 //añadimos el control del teclado
 const onKeyDown = function (event) {
     //console.log(event.code);
@@ -502,8 +502,26 @@ const animate = function () {
 
     requestAnimationFrame(animate);
     renderer.render(scene, camera);
-   // colisionBloques();
+    // colisionBloques();
+    colision()
     
 };
 
 animate();
+
+function colision(){
+    var raycaster = new THREE.Raycaster();
+    const pointer = new THREE.Vector3();
+    var INTERSECTED;
+    pointer.x=personew.position.x;
+    pointer.y=personew.position.y;
+    pointer.z=personew.position.z;
+    raycaster.setFromCamera( pointer, camera );
+    const intersects = raycaster.intersectObjects( scene.children, true);
+    if(intersects.length > 0){
+        if(INTERSECTED != intersects[ 0 ].object){
+            console.log("colisiono");
+            personew.position.y += 1;
+        }
+    }
+}
