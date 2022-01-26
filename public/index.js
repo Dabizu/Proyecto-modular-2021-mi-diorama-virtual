@@ -111,7 +111,7 @@ const renderer = new THREE.WebGLRenderer();
 const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 10000);
 
 
-renderer.setSize(window.innerWidth, window.innerHeight);
+//renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 camera.position.set(100, 80, 100)
 //camera.position.set(50, 50, 40)
@@ -327,7 +327,7 @@ createFloor(150,385, 5,{x: 0 ,y: -2 ,z: -40})       //| +Adelante ,  | -Atras
 //PISO:2                                           // | +izquierda , | -Derecha 
 createFloor(2346,3400, 5,{x: -1280 ,y: 20 ,z: -90}) //X:Profundidad, Y:Altura, Z:Lados
 //PISO:3
-//createFloor(1600,1656, 5,{x: -1644 ,y: 30 ,z: -550}) 
+//createFloor(10,10, 10,{x: 0 ,y: 30 ,z: -100}) 
 //PISO:4
 //createFloor(1550,1250, 5,{x: 400 ,y: -12 ,z: -800})
 
@@ -367,7 +367,7 @@ gui
 const controls = new OrbitControls(camera, renderer.domElement);
 
 
-const velocidadMovimientoZorro = 1
+const velocidadMovimientoZorro = 3
 //añadimos el control del teclado
 const onKeyDown = function (event) {
     //console.log(event.code);
@@ -501,6 +501,7 @@ const animate = function () {
     }
 
     requestAnimationFrame(animate);
+    renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.render(scene, camera);
     // colisionBloques();
     colision()
@@ -521,7 +522,10 @@ function colision(){
     if(intersects.length > 0){
         if(INTERSECTED != intersects[ 0 ].object){
             console.log("colisiono");
-            personew.position.y += 1;
+            //personew.position.y += 1;
         }
     }
+    /*else{
+        personew.position.y -= 1;
+    }*/
 }

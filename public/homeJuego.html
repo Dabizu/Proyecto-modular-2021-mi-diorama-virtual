@@ -123,14 +123,14 @@
                         divContainer.append(img);
                         divContainer.append(pNombre);
                     })
-                }else{
-                    dameUsuarioGoogle();
                 }
             }
         }
         http.send()
     }
     datosGlobales();
+    dameUsuarioGoogle();
+    
     function dameUsuarioGoogle() {
         const url = '/success'
         const http = new XMLHttpRequest()
@@ -152,20 +152,6 @@
                 correo.innerText = resultado.emails[0].value;
                 divContainer.append(img);
                 divContainer.append(pNombre);
-                
-                /*
-                console.log(resultado)
-                var pi=document.getElementById("pi");
-                var p=document.createElement('p');
-                p.innerText=resultado.displayName;
-                pi.append(p);
-                var p2=document.createElement('p');
-                p2.innerText=resultado.emails[0].value;
-                pi.append(p2);
-                var p3=document.createElement('img');
-                p3.setAttribute("src",);
-                pi.append(p3);*/
-                //console.log(this.responseText)
             }
         }
         http.send()

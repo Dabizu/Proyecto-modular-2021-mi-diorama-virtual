@@ -64,7 +64,8 @@ app.get('/auth/google/callback',
   function(req, res) {
     // Successful authentication, redirect success.
     //res.redirect('/success');
-    res.sendfile(__dirname+"/home.html");
+    res.redirect('/home');
+    //res.sendfile(__dirname+"/home.html");
   });
 //termino la autenticacion de google
 app.post("/login", (req, res) => {
