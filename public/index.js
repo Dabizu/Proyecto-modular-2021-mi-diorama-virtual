@@ -2,18 +2,19 @@
 import * as THREE from './build/three.module.js';
 import { STLLoader } from './jsm/loaders/STLLoader.js';
 import { OrbitControls } from './jsm/controls/OrbitControls.js';
-import { FBXLoader } from './jsm/loaders/FBXLoader.js';
+//import { FBXLoader } from './jsm/loaders/FBXLoader.js';
 import { GLTFLoader } from './jsm/loaders/GLTFLoader.js';
 import * as dat from './threejs/libs/dat.gui.module.js';
 
+//Visibilidad de las fisicas
 let fisicasVisibles = true;
-
+//CONJUNTO DE OPCIONES
 const debugObject = {}
+//CONFIGURACION ~ MENU ~
 const gui = new dat.GUI({
     width: 250
 })
-
-
+//CAMBIAR VISIBILIDAD DE LAS FISICAS
 debugObject.mostrarFisicas = () =>{
     if (fisicasVisibles == false){
         fisicasVisibles = true        
@@ -21,16 +22,18 @@ debugObject.mostrarFisicas = () =>{
         fisicasVisibles = false        
     }    
 }
-
+//CREAR UNA SPHERA 
 debugObject.probarFisicas = () =>{
     createSphere(10, {x:0, y: 20, z: 50})
 }
+//AÑADIR AL MENU
 gui.add(debugObject, 'mostrarFisicas')
 gui.add(debugObject, 'probarFisicas')
 
+//BARRA DE CARGA
 const loadingBarElement = document.querySelector('.loading-bar')
 const loadingManager = new THREE.LoadingManager(
-    //LOADER
+    //CARGADO
     ()=>
     {
         //gsap.delayedCall(0.5, ()=>{
@@ -57,7 +60,6 @@ const loadingManager = new THREE.LoadingManager(
 const gltfLoader = new GLTFLoader(loadingManager);
 
 
-
 //boleanos para el uso del teclado
 let moveForward = false;
 let moveBackward = false;
@@ -65,23 +67,24 @@ let moveLeft = false;
 let moveRight = false;
 let canJump = false;
 
-//para mover la camara
+//CAMARA 
 let x=100,z=100;
-
+//
 const raycaster = new THREE.Raycaster();
-const espacio = new THREE.Vector3();
+
 const scene = new THREE.Scene();
-//creamos textura para el fondo
-/*
+
+/*FONDO CON IMAGEN
 const texture = new THREE.TextureLoader();
 texture.load('atardecer.jpg', function (tex) {
     scene.background = tex;
 });
 */
-///DESPUES DE CREAR LA SCENA
 
+///DESPUES DE CARGAR LA ESCENA
 const overlayGeometry = new THREE.PlaneGeometry(2, 2, 1, 1)
 const overlayMaterial = new THREE.ShaderMaterial({
+   //Comentar WIREFRAMA
    wireframe: true,
    transparent: true,
    //transparent: false,
@@ -102,24 +105,16 @@ const overlayMaterial = new THREE.ShaderMaterial({
        }
    `
 })
-
 const overlay = new THREE.Mesh(overlayGeometry, overlayMaterial)
 scene.add(overlay)
 
-
 const renderer = new THREE.WebGLRenderer();
+
 const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 10000);
-
-
-renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 camera.position.set(100, 80, 100)
-//camera.position.set(50, 50, 40)
-
-
 
 // AUDIO
-
 //var audioLoader = new THREE.AudioLoader();
 //var listener = new THREE.AudioListener();
 //var audio = new THREE.Audio(listener);
@@ -130,42 +125,12 @@ camera.position.set(100, 80, 100)
 //});
 
 //agregamos un modelo fbx
-const fbx = new FBXLoader();
-/*
-fbx.load('3dmodels/aloe.fbx', function (obj1) {
-    obj1.position.set(0, 0, 0);
-    obj1.scale.set(20, 20, 20);
-    for (var i = 0; i < 5; i++) {
-        for (var j = 0; j < 5; j++) {
-            var copiaAloe = obj1.clone();
-            copiaAloe.position.set(i * 40, 0, j * 40);
-            scene.add(copiaAloe);
-        }
-    }
-
-});*/
-/*
-fbx.load('3dmodels/rock01.fbx', function (rock1) {
-    rock1.scale.set(20, 20, 20);
-    rock1.position.set(-50, 0, -10);
-    scene.add(rock1);
-
-    var rocknew = rock1.clone();
-    rocknew.position.set(-100, 0, 50);
-    //perso2=rock1;
-    scene.add(rocknew)
-});*/
-/*
-fbx.load('3dmodels/terreno.fbx', function (tierra) {
-    tierra.position.set(0, -90, 0)
-    scene.add(tierra);
-});*/
+//const fbx = new FBXLoader();
 //var grupoPersonaje=new THREE.Group();
-var objetos=new THREE.Group();
+//var objetos=new THREE.Group();
 var personew=new THREE.Group();
-var perso=new THREE.Object3D();
-var personajeCaminando=new THREE.Object3D();
-var personajeEstatico=new THREE.Object3D();
+//var perso=new THREE.Object3D();
+
 /*
 fbx.load('3dmodels/chibi.fbx',function(personaje){
     personaje.position.set(-100,0,-100);
@@ -176,42 +141,34 @@ fbx.load('3dmodels/chibi.fbx',function(personaje){
 });*/
 //grupoPersonaje.add(sessionStorage.getItem('personaje'));
 
+//ESCENARIO
 const gltfLoader2 = new GLTFLoader();
 gltfLoader.load("3dmodels/Escenario3.gltf", function (obj) {
     obj.scene.scale.set(20,20,20);
-    scene.add(obj.scene);
-    //objetos.add(obj);
+    scene.add(obj.scene);    
 });
 
+//ANIMACIONES PERSONAJE
 let mixer = null
 let action = null
-
 const actualizarMovimientos = []
+///---------------------------------------------------------------------------------------------------------------------------------------
 gltfLoader2.load("3dmodels/Fox/gltf/Fox1.gltf",function(objfox){
     mixer = new THREE.AnimationMixer(objfox.scene)        
     action = mixer.clipAction(objfox.animations[2])
     objfox.scene.scale.set(0.2,0.2,0.2);
     personew.add(objfox.scene)
-    
-
 });
 scene.add(personew);
-//scene.add(objetos);
-
-
-
 
 //FISICAS-------------------------------------------------
 const world = new CANNON.World()
 const objetsToUpdate = []
-
-world.broadphase = new CANNON.SAPBroadphase(world)
-world.allowSleep = true
+//world.broadphase = new CANNON.SAPBroadphase(world)
+//world.allowSleep = true
 world.gravity.set(0, -9.82, 0)
 //MATERIAL
 const defaultMaterial = new CANNON.Material('default')
-//
-//const concretePlasticContactMaterial = new CANNON.ContactMaterial(
 const defaultContactMaterial = new CANNON.ContactMaterial(
     defaultMaterial,
     defaultMaterial,
@@ -222,8 +179,6 @@ const defaultContactMaterial = new CANNON.ContactMaterial(
 )
 world.addContactMaterial(defaultContactMaterial)
 world.defaultContactMaterial = defaultContactMaterial
-//MOSTRAR MALLA DEL PISO
-// PISO:1 
 
 const cubeGeometry = new THREE.BoxBufferGeometry(1, 1, 1)
 const cubeMaterial = new THREE.MeshStandardMaterial({
@@ -318,16 +273,43 @@ world.addBody(body)
     })
 }
 
-//ARBOL:1 
-createBox(20, 30, 20,{x: 0 ,y: 15 ,z: 90})
 
+/*
+//FISICAS PERSONAJE
+const personajeGeometry = new THREE.BoxBufferGeometry(10, 10, 10)
+const personajeMaterial = new THREE.MeshStandardMaterial({
+    roughness: 0.4,
+    wireframe: true,
+    color: '#ffff00', 
+})
+const meshPersonaje = new THREE.Mesh(personajeGeometry,personajeMaterial)
+meshPersonaje.castShadow = true
+meshPersonaje.position.copy({x:2 ,y: 17 ,z: 0})
+scene.add(meshPersonaje)
+
+const personajeShape = new CANNON.Box(new CANNON.Vec3(10*0.5, 10*0.5, 10*0.5))
+const personajeBody = new CANNON.Body({
+    mass: 0,
+    position: new CANNON.Vec3(0, 3, 0),
+    personajeShape,
+    material: defaultMaterial
+    
+})
+personajeBody.position.copy({x:2 ,y: 60 ,z: 0})
+world.addBody(personajeBody)
+*/
+
+//MOSTRAR MALLA FISICAS
+//ARBOL:1 
+createBox(20, 30, 20,{x: 0 ,y: 25 ,z: 90})
+//createBox(20, 30, 20,{x: 0 ,y: 15 ,z: 90})
 //PISO:1
 //| Atras | Ancho | Volumen|
 createFloor(150,385, 5,{x: 0 ,y: -2 ,z: -40})       //| +Adelante ,  | -Atras
 //PISO:2                                           // | +izquierda , | -Derecha 
 createFloor(2346,3400, 5,{x: -1280 ,y: 20 ,z: -90}) //X:Profundidad, Y:Altura, Z:Lados
 //PISO:3
-//createFloor(1600,1656, 5,{x: -1644 ,y: 30 ,z: -550}) 
+//createFloor(10,10, 10,{x: 0 ,y: 30 ,z: -100}) 
 //PISO:4
 //createFloor(1550,1250, 5,{x: 400 ,y: -12 ,z: -800})
 
@@ -367,7 +349,7 @@ gui
 const controls = new OrbitControls(camera, renderer.domElement);
 
 
-const velocidadMovimientoZorro = 1
+const velocidadMovimientoZorro = 3
 //añadimos el control del teclado
 const onKeyDown = function (event) {
     //console.log(event.code);
@@ -489,7 +471,7 @@ const animate = function () {
 
         mixer.update(deltaTime)
     }
-    
+    //meshPersonaje.position.copy(personajeBody.position)
 
     world.step(1/60, deltaTime, 3)
 
@@ -501,14 +483,15 @@ const animate = function () {
     }
 
     requestAnimationFrame(animate);
+    renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.render(scene, camera);
     // colisionBloques();
-    colision()
+    //colision()
     
 };
 
 animate();
-
+/*
 function colision(){
     var raycaster = new THREE.Raycaster();
     const pointer = new THREE.Vector3();
@@ -521,7 +504,11 @@ function colision(){
     if(intersects.length > 0){
         if(INTERSECTED != intersects[ 0 ].object){
             console.log("colisiono");
-            personew.position.y += 1;
+            //personew.position.y += 1;
         }
     }
+    /*else{
+        personew.position.y -= 1;
+    }
 }
+*/

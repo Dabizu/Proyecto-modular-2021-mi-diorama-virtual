@@ -41,7 +41,7 @@
             src="https://servidorftpescuela.000webhostapp.com/fotos/david01folder/243321838_2768663216766793_4163524482625227070_n.jpg">
     -->
     </div>
-    
+   <!-- 
      <div class="overlay" id="overlay">
         <div class="popup" id="popup" style="background-color: rgba(187, 179, 179, 0.5)">
             <a href="#" onclick="cerrar()" class="btn-cerrar-popup"><i class="fas fa-times"></i></a>
@@ -50,6 +50,7 @@
             <button type="button" class="btn btn-outline-dark" onclick="cerrar()">siguiente</button>
         </div>
     </div>
+-->
     <script type="module" src="./index.js"></script>
 
 
@@ -123,14 +124,14 @@
                         divContainer.append(img);
                         divContainer.append(pNombre);
                     })
-                }else{
-                    dameUsuarioGoogle();
                 }
             }
         }
         http.send()
     }
     datosGlobales();
+    dameUsuarioGoogle();
+    
     function dameUsuarioGoogle() {
         const url = '/success'
         const http = new XMLHttpRequest()
@@ -152,20 +153,6 @@
                 correo.innerText = resultado.emails[0].value;
                 divContainer.append(img);
                 divContainer.append(pNombre);
-                
-                /*
-                console.log(resultado)
-                var pi=document.getElementById("pi");
-                var p=document.createElement('p');
-                p.innerText=resultado.displayName;
-                pi.append(p);
-                var p2=document.createElement('p');
-                p2.innerText=resultado.emails[0].value;
-                pi.append(p2);
-                var p3=document.createElement('img');
-                p3.setAttribute("src",);
-                pi.append(p3);*/
-                //console.log(this.responseText)
             }
         }
         http.send()
