@@ -24,7 +24,8 @@ debugObject.mostrarFisicas = () =>{
 }
 //CREAR UNA SPHERA 
 debugObject.probarFisicas = () =>{
-    createSphere(10, {x:0, y: 20, z: 50})
+    //createSphere(10, {x:0, y: 20, z: 50})
+    createSphere(10, {x:5, y: 34, z: 5})
 }
 //AÑADIR AL MENU
 gui.add(debugObject, 'mostrarFisicas')
@@ -216,7 +217,6 @@ const createBox = (width, height, depth, position) =>{
 const createFloor = (width, height, depth, position) =>{
     const mesh = new THREE.Mesh(cubeGeometry,floorMaterial)
     mesh.scale.set(width,height,depth)
-
     //mesh.castShadow = true
     mesh.rotation.x = - Math.PI * 0.5
     mesh.position.copy(position)
@@ -249,7 +249,6 @@ const sphereMaterial = new THREE.MeshStandardMaterial({
 })
 const createSphere = (radius, position) =>
 {
-    //THREE.JS MESH
     const mesh = new THREE.Mesh(sphereGeometry,sphereMaterial)
     mesh.scale.set(radius, radius, radius)
     mesh.castShadow = true
@@ -273,36 +272,51 @@ world.addBody(body)
     })
 }
 
-
-/*
 //FISICAS PERSONAJE
+
 const personajeGeometry = new THREE.BoxBufferGeometry(10, 10, 10)
 const personajeMaterial = new THREE.MeshStandardMaterial({
-    roughness: 0.4,
+    
     wireframe: true,
     color: '#ffff00', 
 })
-const meshPersonaje = new THREE.Mesh(personajeGeometry,personajeMaterial)
-meshPersonaje.castShadow = true
-meshPersonaje.position.copy({x:2 ,y: 17 ,z: 0})
-scene.add(meshPersonaje)
+const pMesh = new THREE.Mesh(personajeGeometry,personajeMaterial)
+pMesh.castShadow = true
+pMesh.position.copy({x:5 ,y: 15 ,z: 5})
+//pMesh.position.copy(personew.position)
+scene.add(pMesh)
 
-const personajeShape = new CANNON.Box(new CANNON.Vec3(10*0.5, 10*0.5, 10*0.5))
-const personajeBody = new CANNON.Body({
+const pShape = new CANNON.Box(new CANNON.Vec3(5, 5, 5))
+const pBody = new CANNON.Body({
+    mass: 1,
+    shape:pShape,
+    linearDamping: 0.9
+    //
+})
+pBody.position.copy(pMesh.position)
+actualizarMovimientos.push({
+    pMesh,
+    pBody  
+})
+world.addBody(pBody)
+/*
+const pShape = new CANNON.Box(new CANNON.Vec3(10*0.5, 10*0.5, 10*0.5))
+const pBody = new CANNON.Body({
     mass: 0,
     position: new CANNON.Vec3(0, 3, 0),
-    personajeShape,
+    pShape,
     material: defaultMaterial
     
 })
-personajeBody.position.copy({x:2 ,y: 60 ,z: 0})
-world.addBody(personajeBody)
+//actualizarMovimientos
+pBody.position.copy({x:2 ,y: 60 ,z: 0})
+world.addBody(pBody)
 */
 
 //MOSTRAR MALLA FISICAS
 //ARBOL:1 
-createBox(20, 30, 20,{x: 0 ,y: 25 ,z: 90})
-//createBox(20, 30, 20,{x: 0 ,y: 15 ,z: 90})
+//createBox(20, 30, 20,{x: 0 ,y: 25 ,z: 90})
+createBox(20, 30, 20,{x: 0 ,y: 15 ,z: 90})
 //PISO:1
 //| Atras | Ancho | Volumen|
 createFloor(150,385, 5,{x: 0 ,y: -2 ,z: -40})       //| +Adelante ,  | -Atras
@@ -323,7 +337,6 @@ directionalLight.shadow.normalBias = 0.05
 directionalLight.position.set(3.5, 2, - 1.25)
 scene.add(directionalLight)
 
-
 renderer.physicallyCorrectLights = true
 renderer.outputEncoding = THREE.sRGBEncoding
 renderer.toneMapping = THREE.CineonToneMapping
@@ -333,8 +346,8 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap
 renderer.setClearColor('#211d20')
 
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-//COLORFONDO
 
+//COLORFONDO
 debugObject.clearColor = '#211d20'
 renderer.setClearColor(debugObject.clearColor)
 gui
@@ -343,81 +356,84 @@ gui
         renderer.setClearColor(debugObject.clearColor)
     })
 
-//añadimos el controlador orbital
 
 
+//Añadimos el controlador orbital
+let frenteLibre = true 
+const colision = (colision) =>{
+    console.log("Choco")
+    frenteLibre = false
+}
 const controls = new OrbitControls(camera, renderer.domElement);
 
-
 const velocidadMovimientoZorro = 3
+
 //añadimos el control del teclado
 const onKeyDown = function (event) {
     //console.log(event.code);
     camera.lookAt(personew.position)
     controls.target.set(personew.position.x-10,50,personew.position.z-10);
     controls.update();
-    switch (event.code) {
 
-        case 'ArrowUp':
-        case 'KeyW':
-            moveForward = true;        
-            
-            action.play()                               
-            personew.position.x -= velocidadMovimientoZorro;
-            x-=velocidadMovimientoZorro;
-            personew.rotation.y =  0
-            
-            camera.position.x=x;
-            //console.log()
-            break;
+    
+    //console.log(pBody.collisionResponse)
 
-        case 'ArrowLeft':
-        case 'KeyA':
-            moveLeft = true;
-            action.play()            
-            personew.rotation.y = Math.PI / 2
-            personew.position.z += velocidadMovimientoZorro;
-
-            z+=velocidadMovimientoZorro;
-            camera.position.z=z;
-            break;
-
-        case 'ArrowDown':
-        case 'KeyS':
-            moveBackward = true;
-            action.play()
-            
-            personew.position.x += velocidadMovimientoZorro;
-            x+=velocidadMovimientoZorro;
-            personew.rotation.y = Math.PI
-            camera.position.x=x;
-           
-            break;
-
-        case 'ArrowRight':
-        case 'KeyD':
-            moveRight = true;
-            action.play()
-            
-            personew.rotation.y = - Math.PI / 2
-            personew.position.z -= velocidadMovimientoZorro;
-            z-=velocidadMovimientoZorro;
-            camera.position.z=z;
-            break;
-
-        case 'Space':
-            if (canJump === true) velocity.y += 350;
-            canJump = false;
-            break;
-
+    if(frenteLibre){
+        switch (event.code) {
+            case 'ArrowUp':
+            case 'KeyW':
+                moveForward = true;                    
+                action.play()                               
+                personew.position.x -= velocidadMovimientoZorro;
+                x-=velocidadMovimientoZorro;
+                personew.rotation.y =  0            
+                camera.position.x=x;
+                //pBody.applyForce(new CANNON.Vec3(150,0,0),new CANNON.Vec3(0,0,0))
+                //pBody.applyForce(new CANNON.Vec3(-150,0,0),pBody.position)
+                //pBody.applyImpulse(new CANNON.Vec3(-10,0,0),pBody.position)
+                break;
+    
+            case 'ArrowLeft':
+            case 'KeyA':
+                moveLeft = true;
+                action.play()            
+                personew.rotation.y = Math.PI / 2
+                personew.position.z += velocidadMovimientoZorro;
+                z+=velocidadMovimientoZorro;
+                camera.position.z=z;
+                break;
+    
+            case 'ArrowDown':
+            case 'KeyS':
+                moveBackward = true;
+                action.play()            
+                personew.position.x += velocidadMovimientoZorro;
+                x+=velocidadMovimientoZorro;
+                personew.rotation.y = Math.PI
+                camera.position.x=x;           
+                break;
+    
+            case 'ArrowRight':
+            case 'KeyD':
+                moveRight = true;
+                action.play()        
+                personew.rotation.y = - Math.PI / 2
+                personew.position.z -= velocidadMovimientoZorro;
+                z-=velocidadMovimientoZorro;
+                camera.position.z=z;
+                break;
+    
+            case 'Space':
+                if (canJump === true) velocity.y += 350;
+                canJump = false;
+                break;
+        }
     }
-
 };
 
 const onKeyUp = function (event) {
-
+    frenteLibre = true
     switch (event.code) {
-
         case 'ArrowUp':
         case 'KeyW':
             mixer.stopAllAction()            
@@ -441,11 +457,8 @@ const onKeyUp = function (event) {
             mixer.stopAllAction()  
             moveRight = false;
             break;
-
     }
-
 };
-
 document.addEventListener('keydown', onKeyDown);
 document.addEventListener('keyup', onKeyUp);
 /*
@@ -457,31 +470,43 @@ function colisionBloques(){
 	}
 }
 */
+//TIEMPOs Y Actualizacion
 const clock = new THREE.Clock()
 let oldElapsedTime = 0
-
 
 const animate = function () {
     const elapsedTime = clock.getElapsedTime()
     const deltaTime = elapsedTime - oldElapsedTime
-    //console.log(deltaTime)
     oldElapsedTime = elapsedTime
-    //MIXER ZORRO
-    if(mixer != null){
-
-        mixer.update(deltaTime)
-    }
-    //meshPersonaje.position.copy(personajeBody.position)
 
     world.step(1/60, deltaTime, 3)
-
+    //MIXER ZORRO
+    if(mixer != null){
+        mixer.update(deltaTime)
+    }
+    //pMesh.position.copy(personew.position)
+    
+    //pMesh.position.copy(pBody.position)
+    //pMesh.quaternion.copy(pBody.quaternion)
+    //pMesh.position.copy({x: personew.position.x ,y: 6 ,z: personew.position.z})
+    //meshPersonaje.position.copy(personajeBody.position)
+    pBody.position.copy({x:personew.position.x  ,y:personew.position.y + 10 ,z:personew.position.z})
+    //pBody.position.copy(personew.position)
+    
+    pBody.addEventListener("collide",colision)
+    for(const obj of actualizarMovimientos){
+        obj.pMesh.visible = fisicasVisibles
+        obj.pMesh.position.copy(obj.pBody.position)
+        //obj.pMesh.quaternion.copy(obj.pBody.quaternion)
+    }
+    
     for(const object of objetsToUpdate)
     {
         object.mesh.visible = fisicasVisibles
         object.mesh.position.copy(object.body.position)
         object.mesh.quaternion.copy(object.body.quaternion)
     }
-
+    
     requestAnimationFrame(animate);
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.render(scene, camera);
