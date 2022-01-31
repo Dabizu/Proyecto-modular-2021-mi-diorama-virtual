@@ -26,6 +26,7 @@
         integrity="sha384-uWxY/CJNBR+1zjPWmfnSnVxwRheevXITnMqoEIeG1LJrdI0GlVs/9cVSyPYXdcSF" crossorigin="anonymous">
     <!--archivo para la venta flotante y el demas estilo de la pagina-->
     <link type="text/css" rel="stylesheet" href="css/emergente.css">
+    <link type="text/css" rel="stylesheet" href="css/estilohome.css">
 
 </head>
 
@@ -41,7 +42,7 @@
             src="https://servidorftpescuela.000webhostapp.com/fotos/david01folder/243321838_2768663216766793_4163524482625227070_n.jpg">
     -->
     </div>
-   <!-- 
+    
      <div class="overlay" id="overlay">
         <div class="popup" id="popup" style="background-color: rgba(187, 179, 179, 0.5)">
             <a href="#" onclick="cerrar()" class="btn-cerrar-popup"><i class="fas fa-times"></i></a>
@@ -50,7 +51,9 @@
             <button type="button" class="btn btn-outline-dark" onclick="cerrar()">siguiente</button>
         </div>
     </div>
--->
+
+    <div id="sidebar"></div>
+
     <script type="module" src="./index.js"></script>
 
 
@@ -69,14 +72,21 @@
 
     overlay.classList.add('active');
     popup.classList.add('active');
-    function cerrar() {
-        const music = new Audio('./audio/adventures-nivel.mp3');
+    const music = new Audio('./audio/adventures-nivel.mp3');
         //console.log("se cargo el archivo en la instancia");
         //music.play();
         //console.log("damos play  para reproduccion");
         music.loop = true;
         //console.log("activamos el ciclo infinito");
         music.playbackRate = 1;
+    function pause(){
+        music.pause();
+    }
+    function play(){
+        music.play();
+    }
+    function cerrar() {
+        music.play();
         //console.log("play de musica");
         overlay.classList.remove('active');
         popup.classList.remove('active');
@@ -94,6 +104,11 @@
         console.log("play de musica");
     }
     */
+    function abrirBarra(){
+        console.log('clik')
+        document.getElementById('sidebar').classList.toggle('active');
+        console.log(document.getElementById('sidebar'))
+    }
     function cerrarsession() {
         sessionStorage.removeItem("id");
         window.location = "/cerrarsession";
@@ -105,33 +120,64 @@
 
         http.open("POST", url)
         http.onreadystatechange = function () {
-
             if (this.readyState == 4 && this.status == 200) {
-                //var resultado = JSON.parse(this.responseText)
-                //console.log(resultado.id)
-                if (this.responseText != "") {
+                if (this.responseText != undefined) {
                     var resultado = JSON.parse(this.responseText)
                     resultado.forEach(element => {
-                        var divContainer = document.getElementById("container");
+                        var sidebar=document.getElementById('sidebar');
+                        var div=document.createElement('div');
+                        div.setAttribute("class","toggle-btn");
+                        
                         let img = document.createElement('img');
                         img.setAttribute("id", "imagen");
                         img.setAttribute("width", "10%");
                         img.setAttribute("height", "10%");
                         img.setAttribute("src", "https://servidorftpescuela.000webhostapp.com/fotos/" + element.nombre + "folder/" + element.foto);
-                        let pNombre = document.createElement('p');
-                        pNombre.innerText = element.nombre;
+                        img.setAttribute("onclick","abrirBarra()")
+                        div.append(img);
+                        sidebar.append(div);
 
-                        divContainer.append(img);
-                        divContainer.append(pNombre);
+                        var ul=document.createElement("ul");
+                        var li=document.createElement('li');
+                        li.innerText=element.nombre;
+                        var li2=document.createElement('li');
+                        li2.innerText=element.correo;
+                        var li3=document.createElement('li');
+                        li3.innerText="miau";
+                        var li4=document.createElement('li');
+                        li4.innerText="insignias";
+                        var li5=document.createElement('li');
+                        li5.innerText="informacion";
+                        
+                        ul.append(li);
+                        ul.append(li2);
+                        ul.append(li3);
+                        ul.append(li4);
+                        ul.append(li5);
+                        sidebar.append(ul)
+                        var divContainer = document.getElementById("container");
+                        let buttonPause = document.createElement('button');
+                        buttonPause.setAttribute("id","pause")
+                        buttonPause.innerText="pause";
+                        buttonPause.setAttribute("onclick","pause()");
+                        divContainer.append(buttonPause);
+                        let buttonPlay = document.createElement('button');
+                        buttonPay.setAttribute("id","play");
+                        buttonPlay.innerText="play";
+                        buttonPlay.setAttribute("onclick","play()");
+                        divContainer.append(buttonPlay);
+                        divContainer.append(sidebar);
                     })
+                }else{
+                    dameUsuarioGoogle();
                 }
             }
         }
         http.send()
     }
     datosGlobales();
-    dameUsuarioGoogle();
     
+
     function dameUsuarioGoogle() {
         const url = '/success'
         const http = new XMLHttpRequest()
@@ -140,6 +186,7 @@
         http.onreadystatechange = function () {
 
             if (this.readyState == 4 && this.status == 200) {
+                if(this.responseText!=undefined){
                 var resultado = JSON.parse(this.responseText)
                 var divContainer = document.getElementById("container");
                 let img = document.createElement('img');
@@ -153,6 +200,7 @@
                 correo.innerText = resultado.emails[0].value;
                 divContainer.append(img);
                 divContainer.append(pNombre);
+            }
             }
         }
         http.send()

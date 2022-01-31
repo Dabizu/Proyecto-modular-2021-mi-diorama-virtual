@@ -213,7 +213,7 @@ app.post("/insertarnivel",(req,res)=>{
 
   MongoClient.connect(url, function(err, db) {
     if (err) throw err;
-    var dbo = db.db("mydb");
+    var dbo = db.db(base);
     var myobj = { id_juego: idjuego, descripcion: descripcion, deficultad: deficultad, puntaje: puntaje };
     dbo.collection("customers").insertOne(myobj, function(err, res) {
       if (err) throw err;
@@ -400,5 +400,19 @@ app.post("/recomendacion",(req,res)=>{
   });
 });
 
+//para la deteccion de aves y su informacion
+app.post("/animales", (req, res) => {
+  var nombre = req.param('nombre');
+  MongoClient.connect(url, function (err, db) {
+    if (err) throw err;
+    var dbo = db.db(base);
+    var query = { nombre: nombre };
+    dbo.collection("animal").find(query).toArray(function (err, result) {
+      if (err) throw err;
+      res.send(result);
+      db.close();
+    });
+  });
+});
 
 app.listen(port, () => { console.log("se inicio el servidor"); });

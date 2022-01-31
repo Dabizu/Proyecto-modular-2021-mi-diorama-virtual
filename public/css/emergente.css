@@ -11,7 +11,7 @@ body {
     background-color: #d64242;
 }
 
-#imagen {
+#imagen{
     width: 100px;
     height: 100px;
     -moz-border-radius: 50%;
@@ -23,7 +23,8 @@ body {
     background: #5cb85c;
 }
 
-p {
+
+#p{
     position: absolute;
     left: 50%;
     top: 0px;
