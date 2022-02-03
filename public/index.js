@@ -22,12 +22,17 @@ debugObject.mostrarFisicas = () =>{
         fisicasVisibles = false        
     }    
 }
+
+debugObject.Teletrasportar = (x,y,z)=>{
+    teleport(x,y,z)
+}
 //CREAR UNA SPHERA 
 debugObject.probarFisicas = () =>{
     //createSphere(10, {x:0, y: 20, z: 50})
     createSphere(10, {x:5, y: 34, z: 5})
 }
 //AÑADIR AL MENU
+gui.add(debugObject, 'Teletrasportar')
 gui.add(debugObject, 'mostrarFisicas')
 gui.add(debugObject, 'probarFisicas')
 
@@ -299,24 +304,24 @@ actualizarMovimientos.push({
     pBody  
 })
 world.addBody(pBody)
-/*
-const pShape = new CANNON.Box(new CANNON.Vec3(10*0.5, 10*0.5, 10*0.5))
-const pBody = new CANNON.Body({
+//TELEPORT- Invisible
+const TPShape = new CANNON.Box(new CANNON.Vec3(10 ,10 ,10))
+const TPBody = new CANNON.Body({
     mass: 0,
-    position: new CANNON.Vec3(0, 3, 0),
-    pShape,
-    material: defaultMaterial
-    
+    shape:TPShape,
+    linearDamping: 0.9,
+    position: new THREE.Vector3({x: -75 ,y: 5 ,z: 5})
+    //
 })
-//actualizarMovimientos
-pBody.position.copy({x:2 ,y: 60 ,z: 0})
-world.addBody(pBody)
-*/
+TPBody.position.copy({x: -75 ,y: 5 ,z: 5})
+world.addBody(TPBody)
 
 //MOSTRAR MALLA FISICAS
 //ARBOL:1 
 //createBox(20, 30, 20,{x: 0 ,y: 25 ,z: 90})
 createBox(20, 30, 20,{x: 0 ,y: 15 ,z: 90})
+
+//createBox(20, 20, 20,{x: -75 ,y: 5 ,z: 5})
 //PISO:1
 //| Atras | Ancho | Volumen|
 createFloor(150,385, 5,{x: 0 ,y: -2 ,z: -40})       //| +Adelante ,  | -Atras
@@ -366,6 +371,20 @@ const colision = (colision) =>{
 }
 const controls = new OrbitControls(camera, renderer.domElement);
 
+const teleport = (x2,y2,z2) => {
+    x2 = -180
+    y2 =  20
+    z2 =  5
+    personew.position.copy({x:x2 ,y: y2 ,z: z2})  //Cambiar por x2, y2,z2
+    camera.position.set(x2+100, y2+60, z2+100) //THREE.Vector3({x:5, y: 34, z: 5}
+    camera.lookAt(personew.position)
+    controls.target.set(personew.position.x-10,50,personew.position.z-10);
+    controls.update();
+    x = x2
+    //y = 
+    z = 100
+    console.log("TP")
+}
 const velocidadMovimientoZorro = 3
 
 //añadimos el control del teclado
@@ -374,7 +393,7 @@ const onKeyDown = function (event) {
     camera.lookAt(personew.position)
     controls.target.set(personew.position.x-10,50,personew.position.z-10);
     controls.update();
-
+    console.log(camera.position)
     
     //console.log(pBody.collisionResponse)
 
@@ -494,6 +513,8 @@ const animate = function () {
     //pBody.position.copy(personew.position)
     
     pBody.addEventListener("collide",colision)
+    //Teleport position
+    TPBody.addEventListener("collide", teleport)
     for(const obj of actualizarMovimientos){
         obj.pMesh.visible = fisicasVisibles
         obj.pMesh.position.copy(obj.pBody.position)
