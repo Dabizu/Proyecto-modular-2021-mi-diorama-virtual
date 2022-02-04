@@ -23,8 +23,8 @@ debugObject.mostrarFisicas = () =>{
     }    
 }
 
-debugObject.Teletrasportar = (x,y,z)=>{
-    teleport(x,y,z)
+debugObject.Teletrasportar = ()=>{
+    teleport(-180, 21,  5)
 }
 //CREAR UNA SPHERA 
 debugObject.probarFisicas = () =>{
@@ -32,9 +32,15 @@ debugObject.probarFisicas = () =>{
     createSphere(10, {x:5, y: 34, z: 5})
 }
 //AÑADIR AL MENU
+debugObject.getPospersonaje = () =>{
+    //createSphere(10, {x:0, y: 20, z: 50})
+    console.log(personew.position)
+}
+
 gui.add(debugObject, 'Teletrasportar')
 gui.add(debugObject, 'mostrarFisicas')
 gui.add(debugObject, 'probarFisicas')
+gui.add(debugObject, 'getPospersonaje')
 
 //BARRA DE CARGA
 const loadingBarElement = document.querySelector('.loading-bar')
@@ -74,12 +80,19 @@ let moveRight = false;
 let canJump = false;
 
 //CAMARA 
-let x=100,z=100;
+let x=83,z=24;
 //
 const raycaster = new THREE.Raycaster();
 
 const scene = new THREE.Scene();
 
+debugObject.fondoPaisaje = () =>{
+    const texture = new THREE.TextureLoader();
+    texture.load('./img/atardecer.jpg', function (tex) {
+    scene.background = tex;
+});
+}
+gui.add(debugObject, 'fondoPaisaje')
 /*FONDO CON IMAGEN
 const texture = new THREE.TextureLoader();
 texture.load('atardecer.jpg', function (tex) {
@@ -118,7 +131,21 @@ const renderer = new THREE.WebGLRenderer();
 
 const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 10000);
 document.body.appendChild(renderer.domElement);
-camera.position.set(100, 80, 100)
+//camera.position.set(100, 80, 100)
+camera.position.set(83, 42, 24)
+
+gui.add(camera.position, 'x')
+gui.add(camera.position, 'y')
+gui.add(camera.position, 'z')
+
+debugObject.posicioncamara = () =>{
+    //createSphere(10, {x:0, y: 20, z: 50})
+    console.log("-------POSICION-------------------------------");
+    console.log(personew.position);
+    console.log(camera.position)
+    console.log("---------------------------------------");
+}
+gui.add(debugObject, 'posicioncamara')
 
 // AUDIO
 //var audioLoader = new THREE.AudioLoader();
@@ -317,16 +344,30 @@ TPBody.position.copy({x: -75 ,y: 5 ,z: 5})
 world.addBody(TPBody)
 
 //MOSTRAR MALLA FISICAS
-//ARBOL:1 
-//createBox(20, 30, 20,{x: 0 ,y: 25 ,z: 90})
-createBox(20, 30, 20,{x: 0 ,y: 15 ,z: 90})
+//ARBOLES MAPA: 1
+createBox(20, 30, 20,{x: 0 ,y: 15 ,z: 90})//Arbol 1
+createBox(20, 30, 20,{x: 6 ,y: 15 ,z: -223})//Arbol 2
+createBox(20, 30, 20,{x: -48 ,y: 15 ,z: -195})//Pino
+//Letrero
+createBox(20, 30, 20,{x: -213 ,y: 36 ,z: 8})
+//ARBOLES MAPA: 2
+createBox(20, 30, 20,{x: -195 ,y: 36 ,z: -142}) //Arbol 1
+createBox(20, 30, 20,{x: -420 ,y: 36 ,z: -343}) //Arbol 2
+createBox(20, 30, 20,{x: -468 ,y: 36 ,z: -295}) //Arbol 3
+createBox(20, 30, 20,{x: -597 ,y: 36 ,z: -295}) //Arbol 4
+createBox(20, 30, 20,{x: -534 ,y: 36 ,z: -391}) //Arbol 5
+createBox(20, 30, 20,{x: -180 ,y: 36 ,z: -910}) //Arbol 6
+createBox(20, 30, 20,{x: -234 ,y: 36 ,z: -916}) //Arbol 7
 
+//Cerca Izquierda Mapa: 2
+createBox(510, 30, 20,{x: -380 ,y: 36 ,z: 150})
+createBox(20, 30, 1950,{x: -130 ,y: 36 ,z: -787}) //Cerca Inferior Mapa: 2
 //createBox(20, 20, 20,{x: -75 ,y: 5 ,z: 5})
 //PISO:1
 //| Atras | Ancho | Volumen|
 createFloor(150,385, 5,{x: 0 ,y: -2 ,z: -40})       //| +Adelante ,  | -Atras
 //PISO:2                                           // | +izquierda , | -Derecha 
-createFloor(2346,3400, 5,{x: -1280 ,y: 20 ,z: -90}) //X:Profundidad, Y:Altura, Z:Lados
+createFloor(2346,3400, 5,{x: -1280 ,y: 19 ,z: -90}) //X:Profundidad, Y:Altura, Z:Lados
 //PISO:3
 //createFloor(10,10, 10,{x: 0 ,y: 30 ,z: -100}) 
 //PISO:4
@@ -367,33 +408,33 @@ gui
 let frenteLibre = true 
 const colision = (colision) =>{
     console.log("Choco")
+    if ( personew.position.x == -63 && personew.position.y == 0){
+        teleport(-180, 21,  5)
+    }
     frenteLibre = false
 }
 const controls = new OrbitControls(camera, renderer.domElement);
 
 const teleport = (x2,y2,z2) => {
-    x2 = -180
-    y2 =  20
-    z2 =  5
     personew.position.copy({x:x2 ,y: y2 ,z: z2})  //Cambiar por x2, y2,z2
-    camera.position.set(x2+100, y2+60, z2+100) //THREE.Vector3({x:5, y: 34, z: 5}
+    camera.position.set(x2+80, y2+42, z2+24) //THREE.Vector3({x:5, y: 34, z: 5}
     camera.lookAt(personew.position)
     controls.target.set(personew.position.x-10,50,personew.position.z-10);
     controls.update();
-    x = x2
-    //y = 
-    z = 100
-    console.log("TP")
+    x = x2 + 83
+    z = z2 + 24
+    //console.log("TP")
 }
-const velocidadMovimientoZorro = 3
+//const velocidadMovimientoZorro = 3
+const velocidadMovimientoZorro = 6
 
 //añadimos el control del teclado
 const onKeyDown = function (event) {
     //console.log(event.code);
     camera.lookAt(personew.position)
-    controls.target.set(personew.position.x-10,50,personew.position.z-10);
+    controls.target.set(personew.position.x,42,personew.position.z);
     controls.update();
-    console.log(camera.position)
+    //console.log(camera.position)
     
     //console.log(pBody.collisionResponse)
 
@@ -406,10 +447,7 @@ const onKeyDown = function (event) {
                 personew.position.x -= velocidadMovimientoZorro;
                 x-=velocidadMovimientoZorro;
                 personew.rotation.y =  0            
-                camera.position.x=x;
-                //pBody.applyForce(new CANNON.Vec3(150,0,0),new CANNON.Vec3(0,0,0))
-                //pBody.applyForce(new CANNON.Vec3(-150,0,0),pBody.position)
-                //pBody.applyImpulse(new CANNON.Vec3(-10,0,0),pBody.position)
+                camera.position.x=x+velocidadMovimientoZorro;
                 break;
     
             case 'ArrowLeft':
@@ -419,7 +457,7 @@ const onKeyDown = function (event) {
                 personew.rotation.y = Math.PI / 2
                 personew.position.z += velocidadMovimientoZorro;
                 z+=velocidadMovimientoZorro;
-                camera.position.z=z;
+                camera.position.z=z-velocidadMovimientoZorro;
                 break;
     
             case 'ArrowDown':
@@ -429,7 +467,7 @@ const onKeyDown = function (event) {
                 personew.position.x += velocidadMovimientoZorro;
                 x+=velocidadMovimientoZorro;
                 personew.rotation.y = Math.PI
-                camera.position.x=x;           
+                camera.position.x=x+velocidadMovimientoZorro;           
                 break;
     
             case 'ArrowRight':
@@ -439,7 +477,7 @@ const onKeyDown = function (event) {
                 personew.rotation.y = - Math.PI / 2
                 personew.position.z -= velocidadMovimientoZorro;
                 z-=velocidadMovimientoZorro;
-                camera.position.z=z;
+                camera.position.z=z+velocidadMovimientoZorro;
                 break;
     
             case 'Space':
@@ -514,7 +552,7 @@ const animate = function () {
     
     pBody.addEventListener("collide",colision)
     //Teleport position
-    TPBody.addEventListener("collide", teleport)
+    //TPBody.addEventListener("collide", teleport(-180, 20, 5))
     for(const obj of actualizarMovimientos){
         obj.pMesh.visible = fisicasVisibles
         obj.pMesh.position.copy(obj.pBody.position)
