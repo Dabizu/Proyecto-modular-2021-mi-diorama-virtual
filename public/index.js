@@ -24,6 +24,8 @@ debugObject.mostrarFisicas = () =>{
 }
 
 debugObject.Teletrasportar = ()=>{
+    reset()
+    cargarSegundoMapa()
     teleport(-180, 21,  5)
 }
 //CREAR UNA SPHERA 
@@ -134,9 +136,8 @@ document.body.appendChild(renderer.domElement);
 //camera.position.set(100, 80, 100)
 camera.position.set(83, 42, 24)
 
-gui.add(camera.position, 'x')
-gui.add(camera.position, 'y')
-gui.add(camera.position, 'z')
+const axesHelper = new THREE.AxesHelper( 100 );
+scene.add( axesHelper );
 
 debugObject.posicioncamara = () =>{
     //createSphere(10, {x:0, y: 20, z: 50})
@@ -305,7 +306,6 @@ world.addBody(body)
 }
 
 //FISICAS PERSONAJE
-
 const personajeGeometry = new THREE.BoxBufferGeometry(10, 10, 10)
 const personajeMaterial = new THREE.MeshStandardMaterial({
     
@@ -343,37 +343,6 @@ const TPBody = new CANNON.Body({
 TPBody.position.copy({x: -75 ,y: 5 ,z: 5})
 world.addBody(TPBody)
 
-//MOSTRAR MALLA FISICAS
-//ARBOLES MAPA: 1
-createBox(20, 30, 20,{x: 0 ,y: 15 ,z: 90})//Arbol 1
-createBox(20, 30, 20,{x: 6 ,y: 15 ,z: -223})//Arbol 2
-createBox(20, 30, 20,{x: -48 ,y: 15 ,z: -195})//Pino
-//Letrero
-createBox(20, 30, 20,{x: -213 ,y: 36 ,z: 8})
-//ARBOLES MAPA: 2
-createBox(20, 30, 20,{x: -195 ,y: 36 ,z: -142}) //Arbol 1
-createBox(20, 30, 20,{x: -420 ,y: 36 ,z: -343}) //Arbol 2
-createBox(20, 30, 20,{x: -468 ,y: 36 ,z: -295}) //Arbol 3
-createBox(20, 30, 20,{x: -597 ,y: 36 ,z: -295}) //Arbol 4
-createBox(20, 30, 20,{x: -534 ,y: 36 ,z: -391}) //Arbol 5
-createBox(20, 30, 20,{x: -180 ,y: 36 ,z: -910}) //Arbol 6
-createBox(20, 30, 20,{x: -234 ,y: 36 ,z: -916}) //Arbol 7
-
-//Cerca Izquierda Mapa: 2
-createBox(510, 30, 20,{x: -380 ,y: 36 ,z: 150})
-createBox(20, 30, 1950,{x: -130 ,y: 36 ,z: -787}) //Cerca Inferior Mapa: 2
-//createBox(20, 20, 20,{x: -75 ,y: 5 ,z: 5})
-//PISO:1
-//| Atras | Ancho | Volumen|
-createFloor(150,385, 5,{x: 0 ,y: -2 ,z: -40})       //| +Adelante ,  | -Atras
-//PISO:2                                           // | +izquierda , | -Derecha 
-createFloor(2346,3400, 5,{x: -1280 ,y: 19 ,z: -90}) //X:Profundidad, Y:Altura, Z:Lados
-//PISO:3
-//createFloor(10,10, 10,{x: 0 ,y: 30 ,z: -100}) 
-//PISO:4
-//createFloor(1550,1250, 5,{x: 400 ,y: -12 ,z: -800})
-
-
 //agregamos luz
 const directionalLight = new THREE.DirectionalLight('#ffffff', 4)
 directionalLight.castShadow = true
@@ -402,14 +371,58 @@ gui
         renderer.setClearColor(debugObject.clearColor)
     })
 
+const reset = () =>{
+    for(const object of objetsToUpdate){
+        world.removeBody(object.body)
+        scene.remove(object.mesh)
+    }
+}
+const cargarPrimerMapa = ()=>{
+    //PISO:1
+    //| Atras | Ancho | Volumen|
+    createFloor(150,385, 5,{x: 0 ,y: -2 ,z: -40})       //| +Adelante ,  | -Atras
+    //X:Profundidad, Y:Altura, Z:Lados
+    //Cerca:
+    createBox(15, 20, 50,{x: -20,y: 15 ,z: -76})//Pino
+    //ARBOLES MAPA: 1
+    createBox(20, 30, 20,{x: 0 ,y: 15 ,z: 90})//Arbol 1
+    createBox(20, 30, 20,{x: 6 ,y: 15 ,z: -223})//Arbol 2
+    createBox(20, 30, 20,{x: -48 ,y: 15 ,z: -195})//Pino
+    
 
+
+
+}
+//Carga de fisicas Iniciales----------------------
+cargarPrimerMapa()
+
+const cargarSegundoMapa = ()=>{
+    //PISO:2                                           // | +izquierda , | -Derecha 
+    createFloor(2346,3400, 5,{x: -1280 ,y: 19 ,z: -90})
+    //Letrero
+    createBox(20, 30, 20,{x: -213 ,y: 36 ,z: 8})
+    //Cercas    
+    createBox(510, 30, 20,{x: -380 ,y: 36 ,z: 150})     //Cerca Izquierda Mapa: 2
+    createBox(20, 30, 1950,{x: -130 ,y: 36 ,z: -787}) //Cerca Inferior Mapa: 2
+        //ARBOLES MAPA: 2
+    createBox(20, 30, 20,{x: -195 ,y: 36 ,z: -142}) //Arbol 1
+    createBox(20, 30, 20,{x: -420 ,y: 36 ,z: -343}) //Arbol 2
+    createBox(20, 30, 20,{x: -468 ,y: 36 ,z: -295}) //Arbol 3
+    createBox(20, 30, 20,{x: -597 ,y: 36 ,z: -295}) //Arbol 4
+    createBox(20, 30, 20,{x: -534 ,y: 36 ,z: -391}) //Arbol 5
+    createBox(20, 30, 20,{x: -180 ,y: 36 ,z: -910}) //Arbol 6
+    createBox(20, 30, 20,{x: -234 ,y: 36 ,z: -916}) //Arbol 7
+}
 
 //Añadimos el controlador orbital
 let frenteLibre = true 
 const colision = (colision) =>{
     console.log("Choco")
-    if ( personew.position.x == -63 && personew.position.y == 0){
+    if ( personew.position.x <= -60 && personew.position.x >= -72 && personew.position.y == 0){
+        reset()
+        cargarSegundoMapa()
         teleport(-180, 21,  5)
+        
     }
     frenteLibre = false
 }
@@ -425,67 +438,83 @@ const teleport = (x2,y2,z2) => {
     z = z2 + 24
     //console.log("TP")
 }
+
+const moverPersonaje = (direccion,cordenada)=>{                      
+    if(cordenada == 'x'){
+        action.play()                               
+        personew.position.x += direccion;
+        x+= direccion;  
+        if(direccion < 0){
+            personew.rotation.y =  0
+            camera.position.x=x+direccion;
+        }else{
+            personew.rotation.y = Math.PI
+            camera.position.x=x+direccion-150;           
+        }                
+    }
+    if(cordenada == 'z'){
+        action.play()                               
+        personew.position.z += direccion;
+        z+= direccion;             
+        camera.position.z=z+direccion;  
+        if(direccion > 0 ){
+            personew.rotation.y = Math.PI / 2
+        }else{
+            personew.rotation.y = - Math.PI / 2
+        }     
+    }
+    
+}
+
 //const velocidadMovimientoZorro = 3
 const velocidadMovimientoZorro = 6
+let lookTo = 'ToW'
 
-//añadimos el control del teclado
 const onKeyDown = function (event) {
-    //console.log(event.code);
-    camera.lookAt(personew.position)
     controls.target.set(personew.position.x,42,personew.position.z);
     controls.update();
-    //console.log(camera.position)
-    
-    //console.log(pBody.collisionResponse)
-
     if(frenteLibre){
         switch (event.code) {
             case 'ArrowUp':
             case 'KeyW':
-                moveForward = true;                    
-                action.play()                               
-                personew.position.x -= velocidadMovimientoZorro;
-                x-=velocidadMovimientoZorro;
-                personew.rotation.y =  0            
-                camera.position.x=x+velocidadMovimientoZorro;
+                moveForward = true                                 
+                lookTo = 'ToW'
+                moverPersonaje(-velocidadMovimientoZorro,'x')
                 break;
-    
+            case 'ArrowDown':
+            case 'KeyS':         
+                    moveBackward = true;                                                                                                     
+                    lookTo = 'ToS'                             
+                    moverPersonaje(velocidadMovimientoZorro,'x')
+                break;
             case 'ArrowLeft':
             case 'KeyA':
-                moveLeft = true;
-                action.play()            
-                personew.rotation.y = Math.PI / 2
-                personew.position.z += velocidadMovimientoZorro;
-                z+=velocidadMovimientoZorro;
-                camera.position.z=z-velocidadMovimientoZorro;
-                break;
-    
-            case 'ArrowDown':
-            case 'KeyS':
-                moveBackward = true;
-                action.play()            
-                personew.position.x += velocidadMovimientoZorro;
-                x+=velocidadMovimientoZorro;
-                personew.rotation.y = Math.PI
-                camera.position.x=x+velocidadMovimientoZorro;           
-                break;
-    
+                if(lookTo == 'ToS'){
+                    moveRight = true;
+                    moverPersonaje(-velocidadMovimientoZorro, 'z')                           
+                    
+                }else{
+                    moveLeft = true;                             
+                    moverPersonaje(velocidadMovimientoZorro, 'z')                  
+                }
+                break;                        
             case 'ArrowRight':
             case 'KeyD':
-                moveRight = true;
-                action.play()        
-                personew.rotation.y = - Math.PI / 2
-                personew.position.z -= velocidadMovimientoZorro;
-                z-=velocidadMovimientoZorro;
-                camera.position.z=z+velocidadMovimientoZorro;
+                if(lookTo == 'ToS'){    
+                    moveLeft = true;                                             
+                    moverPersonaje(velocidadMovimientoZorro, 'z')                
+                }else{
+                    moveRight = true;                                                                 
+                    moverPersonaje(-velocidadMovimientoZorro, 'z')  
+                }                    
                 break;
-    
             case 'Space':
                 if (canJump === true) velocity.y += 350;
                 canJump = false;
                 break;
         }
     }
+    camera.lookAt(personew.position)
 };
 
 const onKeyUp = function (event) {
@@ -494,7 +523,8 @@ const onKeyUp = function (event) {
         case 'ArrowUp':
         case 'KeyW':
             mixer.stopAllAction()            
-            moveForward = false;
+            moveForward = false;   
+            
             break;
 
         case 'ArrowLeft':
@@ -506,7 +536,8 @@ const onKeyUp = function (event) {
         case 'ArrowDown':
         case 'KeyS':
             mixer.stopAllAction()  
-            moveBackward = false;
+            moveBackward = false;  
+             
             break;
 
         case 'ArrowRight':
@@ -541,18 +572,10 @@ const animate = function () {
     if(mixer != null){
         mixer.update(deltaTime)
     }
-    //pMesh.position.copy(personew.position)
-    
-    //pMesh.position.copy(pBody.position)
-    //pMesh.quaternion.copy(pBody.quaternion)
-    //pMesh.position.copy({x: personew.position.x ,y: 6 ,z: personew.position.z})
-    //meshPersonaje.position.copy(personajeBody.position)
-    pBody.position.copy({x:personew.position.x  ,y:personew.position.y + 10 ,z:personew.position.z})
-    //pBody.position.copy(personew.position)
-    
+    pBody.position.copy({x:personew.position.x  ,y:personew.position.y + 10 ,z:personew.position.z})    
+
     pBody.addEventListener("collide",colision)
     //Teleport position
-    //TPBody.addEventListener("collide", teleport(-180, 20, 5))
     for(const obj of actualizarMovimientos){
         obj.pMesh.visible = fisicasVisibles
         obj.pMesh.position.copy(obj.pBody.position)
