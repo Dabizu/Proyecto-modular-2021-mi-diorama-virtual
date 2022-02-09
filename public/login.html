@@ -1,7 +1,3 @@
-<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -17,10 +13,10 @@
     <meta name="google-signin-scope" content="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">
     <meta name="google-signin-client_id" content="351216209651-5acf5906loue646mi984icdal4ema5k0.apps.googleusercontent.com">
 
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-  <link rel="stylesheet" type="text/css" href="/css/estilosLogin.css" media="screen" />
-    <!--Fontawesome ICONOS-->
-	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/css/estilosLogin.css" media="screen" />
+      <!--Fontawesome ICONOS-->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
 
   <!--<script src="./main.js"></script>-->
   <!--
@@ -61,13 +57,14 @@
                 <!--h3>Mi Diorama Virtual</h3-->
 				<h3>Iniciar sesión</h3>
 				<div class="d-flex justify-content-end social_icon">
-                    <a href="https://www.facebook.com/">
-                        <span ><i class="fab fa-facebook-square"></i></span>
-                    </a>
-					
-                    <!--apartado de login de google redireccion al login-->
-                    <a href="/auth/google"><span class="fa fa-google"> <i class="fab fa-google-plus-square"></i> </span></a>
-                
+          <a href="https://www.facebook.com/">
+              <span><i class="fab fa-facebook-square"></i></span>
+          </a>
+
+          <!--apartado de login de google redireccion al login-->
+          <a href="/auth/google">
+            <span class="fa fa-google"><i class="fab fa-google-plus-square"></i></span>
+          </a>
 				</div>
 			</div>
 			<div class="card-body">
@@ -92,15 +89,173 @@
 			</div>
 			<div class="card-footer">
 				<div class="d-flex justify-content-center links">
-					¿No tienes una cuenta?<a href="/archivoRegistro">Crear una</a>
+					¿No tienes una cuenta?<!--<a href="/archivoRegistro">Crear una</a>-->
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">
+            Crear una
+          </button>
+          
+          <!-- Modal -->
+          <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <center>
+                    <div id="contenedor">
+                        <font size="5" face="Comic Sans MS,arial,verdana" color="black">Registro</font>
+                        <div class="input-group mb-3" id="fotodiv">
+                            <span class="input-group-text" id="inputGroup-sizing-default">Foto</span>
+                            <input id="inputFile" type="file" class="form-control" aria-label="Sizing example input"
+                                aria-describedby="inputGroup-sizing-default">
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="inputGroup-sizing-default">Nombre usuario</span>
+                            <input id="nombre" type="text" class="form-control" aria-label="Sizing example input"
+                                aria-describedby="inputGroup-sizing-default">
+                        </div>
+            
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="inputGroup-sizing-default">Correo</span>
+                            <input id="correo" type="text" class="form-control" aria-label="Sizing example input"
+                                aria-describedby="inputGroup-sizing-default">
+                        </div>
+            
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="inputGroup-sizing-default">Password</span>
+                            <input id="password" type="password" class="form-control" aria-label="Sizing example input"
+                                aria-describedby="inputGroup-sizing-default">
+                        </div>
+            
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="inputGroup-sizing-default">Genero</span>
+                            <div class="input-group-text">
+                                <input id="masculino" onclick="esMasculino()" class="form-check-input mt-0" type="checkbox"
+                                    value="masculino" aria-label="Checkbox for following text input">
+                                <span class="input-group-text" id="inputGroup-sizing-default">masculino</span>
+                            </div>
+                            <div class="input-group-text">
+                                <input id="femenino" onclick="esFemenino()" class="form-check-input mt-0" type="checkbox"
+                                    value="femenino" aria-label="Checkbox for following text input">
+                                <span class="input-group-text" id="inputGroup-sizing-default">femenino</span>
+                            </div>
+                        </div>
+                    </div>
+                </center>
+                </div>
+                <!--
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary">Save changes</button>
+                </div>-->
+              </div>
+            </div>
+          </div>
+                    <!--<a class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">Crear</a>-->
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
+
+<!-- Large modal -->
+<!--<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">Large modal</button>-->
+<script>
+  function subir() {
+      var nombreUsuario = document.getElementById('nombre').value;
+      const inputFile = document.querySelector("#inputFile");
+
+
+      if (inputFile.files.length > 0) {
+          let formData = new FormData();
+          formData.append("nombre_usuario", nombreUsuario);
+          formData.append("archivo", inputFile.files[0]); // En la posición 0; es decir, el primer elemento
+
+          fetch("https://servidorftpescuela.000webhostapp.com/archivo.php", {
+              method: 'POST',
+              body: formData,
+          })
+              .then(respuesta => respuesta.text())
+              .then(decodificado => {
+                  console.log(decodificado);
+              });
+          alert("Archivo enviado");
+      } else {
+          // El usuario no ha seleccionado archivos
+          alert("Selecciona un archivo");
+      }
+  }
+  function enviarDatos() {
+      var nombre = document.getElementById('nombre').value;
+      var correo = document.getElementById('correo').value;
+      var password = document.getElementById('password').value;
+      const inputFileNombre = document.getElementById("inputFile").files[0].name;
+      var genero;
+      if (inputCheckMasculino.checked) {
+          genero = inputCheckMasculino.value;
+      }
+      if (inputCheckFemenino.checked) {
+          genero = inputCheckFemenino.value;
+      }
+
+      var fecha = new Date();
+      var fechaCreacion = fecha.toLocaleDateString();
+
+      const url = '/registrar?nombre=' + nombre + '&correo=' + correo + '&password=' + password + '&genero=' + genero + '&fecha_creacion=' + fechaCreacion + '&foto=' + inputFileNombre;
+      const http = new XMLHttpRequest()
+
+      http.open("POST", url)
+      http.onreadystatechange = function () {
+
+          if (this.readyState == 4 && this.status == 200) {
+              //var resultado = JSON.parse(this.responseText)
+              //console.log(resultado.id)
+              var resultado = this.responseText;
+              if (resultado == 1) {
+                  subir();
+                  alert("se subio con exito");
+                  //windows.location = "/";
+              }
+              else {
+                  alert("no se pudo registrar")
+              }
+
+          }
+      }
+      http.send()
+  }
+  var inputCheckMasculino = document.getElementById('masculino');
+  var inputCheckFemenino = document.getElementById('femenino');
+  function esMasculino() {
+      inputCheckFemenino.checked = false;
+  }
+  function esFemenino() {
+      inputCheckMasculino.checked = false;
+  }
+  var div = document.getElementById('contenedor');
+  let boton = document.createElement('button');
+  boton.setAttribute("type", "button");
+  boton.setAttribute("class", "btn btn-outline-secondary");
+  boton.innerText = "Registrarse";
+  boton.onclick = () => {
+      enviarDatos();
+  }
+  div.append(boton);
+</script>
+
+
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
         crossorigin="anonymous"></script>
+ <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </body>
 <!--<script src="./main.js"></script>-->
 <script src="./scripts/script.js"></script>
