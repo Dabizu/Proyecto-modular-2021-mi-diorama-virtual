@@ -90,3 +90,71 @@ color: white;
 .links a{
 margin-left: 4px;
 }
+
+.btn-primary{
+    margin-top: -4px;
+    margin-left: 12px;
+}
+
+.modal-content{
+    opacity: 0.95;
+}
+
+
+
+.modal-body{
+    opacity: 0.97;
+    border: 1px solid grey;
+    
+    background: url("../img/fondoRegistro.jpg");    
+}
+
+div.modal-header {
+    
+    background: #4e1d06db;
+    margin: none;    
+}
+
+.titulo-registro{
+    font-size: 15px;
+    
+    margin:auto;
+    color: rgb(226, 212, 212);
+    
+}
+
+.input-group-text{ 
+    
+    font-weight: 500;
+}
+
+.btn.btn-outline-secondary{
+    color: black;
+    background-color: #d3ee59;
+    
+}
+
+#nombre.form-control,
+#inputFile.form-control,
+#correo.form-control,
+#password.form-control{
+    opacity: 0.8;
+}
+
+#inputGroup-sizing-default.input-group-text{
+    background-color: #d3ee59;
+    opacity: 0.9;
+}
+
+div.input-group-text{
+    margin-right: 3px;
+    color: black;
+    margin-left: 19px;
+    border: none;
+    background: none;
+}
+
+
+#close-registro{
+    margin: -1rem -1rem -1rem 0px;
+}
