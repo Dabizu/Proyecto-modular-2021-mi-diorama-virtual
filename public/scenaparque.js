@@ -1,8 +1,28 @@
 import { scene, THREE } from './globales.js';
 import { OrbitControls } from './jsm/controls/OrbitControls.js';
 import { FBXLoader } from './jsm/loaders/FBXLoader.js';
+import { GLTFLoader } from './jsm/loaders/GLTFLoader.js';
+import { PointerLockControls } from './jsm/controls/PointerLockControls.js';
+
 
 var arreglo = new Array()
+const velocity = new THREE.Vector3();
+var raycaster = new THREE.Raycaster(new THREE.Vector3(), new THREE.Vector3(0, - 1, 0), 0, 10);
+const direction = new THREE.Vector3();
+//añadimos el control del teclado
+let moveForward = false;
+let moveBackward = false;
+let moveLeft = false;
+let moveRight = false;
+let canJump = false;
+
+//contenedor de objetos
+const objects = [];
+
+//tiempo
+let prevTime = performance.now();
+
+
 class DetectionObejct {
     raycaster;
     INTERSECTED;
@@ -25,7 +45,7 @@ class DetectionObejct {
     }
     detect() {
         this.raycaster.setFromCamera(this.pointer, this.camera);
-        const intersects = this.raycaster.intersectObjects(this.scene.children, true);
+        const intersects = this.raycaster.intersectObjects(this.scene.children, false);
         if (intersects.length > 0) {
             if (this.INTERSECTED != intersects[0].object) {
                 console.log("si detecto el objeto");
@@ -56,11 +76,48 @@ class DetectionObejct {
 
 
 //const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 10000);
+camera.position.z = 50;
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setClearColor(0x021468);
 document.body.appendChild(renderer.domElement);
+
+//conrolador pointer lock
+const controls = new PointerLockControls(camera, document.body);
+controls.lock();
+scene.add( controls.getObject() );
+
+var blocker = document.createElement( 'div' );
+blocker.setAttribute("id","blocker");
+
+var instructions = document.createElement( 'div' );
+instructions.setAttribute("id","instructions");
+instructions.innerHTML="<h1>play</h1>"
+
+blocker.append(instructions);
+document.body.append(blocker);
+
+instructions.addEventListener( 'click', function () {
+
+    controls.lock();
+
+} );
+
+controls.addEventListener( 'lock', function () {
+
+    instructions.style.display = 'none';
+    blocker.style.display = 'none';
+
+} );
+
+controls.addEventListener( 'unlock', function () {
+
+    blocker.style.display = 'block';
+    instructions.style.display = '';
+
+} );
+
 /*
 const geometry = new THREE.BoxGeometry();
 const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
@@ -68,7 +125,7 @@ const cube = new THREE.Mesh( geometry, material );
 cube.name="aguila real";
 scene.add( cube );*/
 
-camera.position.z = 50;
+
 var detector1 = new DetectionObejct("d1", scene, camera);
 var detector2 = new DetectionObejct("d2", scene, camera);
 var detector3 = new DetectionObejct("d3", scene, camera);
@@ -147,11 +204,13 @@ detector29.puntoGrafico(resultadoBase, resultadoAltura + ra1 + ra1 + ra1, 5);
 detector30.puntoGrafico(resultadoBase, resultadoAltura + ra1 + ra1, 5);
 detector31.puntoGrafico(resultadoBase, resultadoAltura + ra1, 5);
 detector32.puntoGrafico(resultadoBase, resultadoAltura, 5);
-
+/*
 //controlador orbital
-const controls = new OrbitControls(camera, renderer.domElement);
-controls.target.set(0, 100, 0);
-controls.update();
+const controlOrbital = new OrbitControls(camera, renderer.domElement);
+controlOrbital.target.set(0, 100, 0);
+controlOrbital.update();*/
+
+
 
 function animate() {
     requestAnimationFrame(animate);
@@ -190,6 +249,57 @@ function animate() {
 
     //cube.rotation.x += 0.01;
     //cube.rotation.y += 0.01;
+    //controlOrbital.update();
+/*
+    if (moveForward === true) { camera.position.x -= 5; }
+    if (moveLeft === true) { camera.position.z -= 5; }
+    if (moveBackward === true) { camera.position.x += 5; }
+    if (moveRight === true) { camera.position.z += 5; }*/
+
+    const time = performance.now();
+
+    raycaster.ray.origin.copy(controls.getObject().position);
+    raycaster.ray.origin.y -= 10;
+
+    const intersections = raycaster.intersectObjects(scene.children, true);
+
+    const onObject = intersections.length > 0;
+
+    const delta = (time - prevTime) / 1000;
+
+    velocity.x -= velocity.x * 10.0 * delta;
+    velocity.z -= velocity.z * 10.0 * delta;
+
+    velocity.y -= 9.8 * 100.0 * delta; // 100.0 = mass
+
+    direction.z = Number(moveForward) - Number(moveBackward);
+    direction.x = Number(moveRight) - Number(moveLeft);
+    direction.normalize(); // this ensures consistent movements in all directions
+
+    if (moveForward || moveBackward) velocity.z -= direction.z * 400.0 * delta;
+    if (moveLeft || moveRight) velocity.x -= direction.x * 400.0 * delta;
+
+    if (onObject === true) {
+
+        velocity.y = Math.max(0, velocity.y);
+        canJump = true;
+
+    }
+
+    controls.moveRight(- velocity.x * delta);
+    controls.moveForward(- velocity.z * delta);
+
+    controls.getObject().position.y += (velocity.y * delta); // new behavior
+
+    if (controls.getObject().position.y < 10) {
+
+        velocity.y = 0;
+        controls.getObject().position.y = 10;
+
+        canJump = true;
+
+    }
+    prevTime = time;
 
     renderer.render(scene, camera);
 };
@@ -222,6 +332,7 @@ fbx.load('3dmodels/aguila-real4.fbx', function (personaje) {
 });
 
 
+
 //cargamos luz para los modelos
 const light = new THREE.AmbientLight(0x404040); // soft white light
 scene.add(light);
@@ -252,3 +363,90 @@ function pedirAve(nombre) {
     }
     http.send()
 }
+
+//control de personaje
+
+
+
+
+
+const onKeyDown = function (event) {
+    //console.log(event.code);
+    switch (event.code) {
+
+        case 'ArrowUp':
+        case 'KeyW':
+            moveForward = true;
+            console.log("adelante");
+            //camera.position.x-=20;
+            break;
+
+        case 'ArrowLeft':
+        case 'KeyA':
+            moveLeft = true;
+            console.log("izquierda");
+            //camera.position.z-=1;
+            break;
+
+        case 'ArrowDown':
+        case 'KeyS':
+            moveBackward = true;
+            console.log("atras");
+            //camera.position.x+=20;
+            break;
+
+        case 'ArrowRight':
+        case 'KeyD':
+            moveRight = true;
+            console.log("derecha");
+            //camera.position.z+=1;
+            break;
+
+        case 'Space':
+            if (canJump === true) velocity.y += 350;
+            canJump = false;
+            break;
+
+    }
+
+};
+
+const onKeyUp = function (event) {
+
+    switch (event.code) {
+
+        case 'ArrowUp':
+        case 'KeyW':
+            moveForward = false;
+            break;
+
+        case 'ArrowLeft':
+        case 'KeyA':
+            moveLeft = false;
+            break;
+
+        case 'ArrowDown':
+        case 'KeyS':
+            moveBackward = false;
+            break;
+
+        case 'ArrowRight':
+        case 'KeyD':
+            moveRight = false;
+            break;
+
+    }
+
+};
+
+document.addEventListener('keydown', onKeyDown);
+document.addEventListener('keyup', onKeyUp);
+
+
+
+const gltfLoader = new GLTFLoader();
+gltfLoader.load("3dmodels/playa.gltf", function (obj) {
+    obj.scene.scale.set(20, 20, 20);
+    scene.add(obj.scene);
+});
+
