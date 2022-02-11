@@ -114,7 +114,6 @@ function initClient() {
     }
     http.send()
 }*/
-
  /*
 function onSignIn(googleUser) {
     // Useful data for your client-side scripts:
