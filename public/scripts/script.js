@@ -1,7 +1,7 @@
 function loguearse() {
     console.log("funcion loguearse ");
-    var correo = document.getElementById("correo").value;
-    var password = document.getElementById("password").value;
+    var correo = document.getElementById("correol").value;
+    var password = document.getElementById("passwordl").value;
     const url = '/login?correo=' + correo + '&password=' + password;
     const http = new XMLHttpRequest()
 
