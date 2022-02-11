@@ -132,6 +132,12 @@
                             <input id="password" type="password" class="form-control" aria-label="Sizing example input"
                                 aria-describedby="inputGroup-sizing-default">
                         </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="inputGroup-sizing-default">Password confirmacion</span>
+                            <input id="password-confirmacion" type="password" class="form-control" aria-label="Sizing example input"
+                                aria-describedby="inputGroup-sizing-default">
+                        </div>
             
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="inputGroup-sizing-default">Genero</span>
@@ -195,6 +201,7 @@
         var nombre = document.getElementById('nombre').value;
         var correo = document.getElementById('correo').value;
         var password = document.getElementById('password').value;
+        var password_confirmacion=document.getElementById('password-confirmacion').value;
         const inputFileNombre = document.getElementById("inputFile").files[0].name;
         var genero;
         if (inputCheckMasculino.checked) {
@@ -210,6 +217,7 @@
         const url = '/registrar?nombre=' + nombre + '&correo=' + correo + '&password=' + password + '&genero=' + genero + '&fecha_creacion=' + fechaCreacion + '&foto=' + inputFileNombre;
         const http = new XMLHttpRequest()
 
+        if(password===password_confirmacion){
         http.open("POST", url)
         http.onreadystatechange = function () {
 
@@ -229,6 +237,10 @@
             }
         }
         http.send()
+        }
+        else{
+            alert("el password no es el mismo")
+        }
     }
     var inputCheckMasculino = document.getElementById('masculino');
     var inputCheckFemenino = document.getElementById('femenino');
