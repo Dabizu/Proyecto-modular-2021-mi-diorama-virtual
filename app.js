@@ -133,6 +133,9 @@ app.get("/planta",(req, res)=>{
 app.get("/prueba",(req, res)=>{
   res.sendFile(__dirname+"/public/prueba.html");
 });
+app.get("/nivel", (req, res) => {
+  res.sendFile(__dirname + "/public/niveles.html");
+});
 
 app.post("/registrar", (req, res) => {
   var nombre = req.param('nombre');
